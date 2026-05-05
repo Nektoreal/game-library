@@ -183,7 +183,10 @@
                 <div class="game-card">
                     <div class="game-title">${entry.game.title}</div>
                     <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-                    <span class="status-badge ${entry.status}">${entry.status}</span>
+                    <div style = "display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+                        <span class="status-badge ${entry.status}">${entry.status}</span>
+                        <button onclick="deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -229,6 +232,13 @@
         }
 
         loadGames();
+
+        async function deleteGame(id) {
+            await fetchWithAuth(`${API}/api/entries/${id}`, {
+                method: 'DELETE'
+            });
+            loadGames();
+        }
     </script>
 </body>
 </html>

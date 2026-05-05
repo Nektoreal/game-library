@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Game Library</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f1a;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: #1a1a2e;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d2d44;
+        }
+
+        nav h1 { color: #818cf8; font-size: 20px; }
+
+        nav button {
+            background: transparent;
+            border: 1px solid #6366f1;
+            color: #818cf8;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        nav button:hover { background: #6366f1; color: white; }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; }
+
+        .add-game {
+            background: #1a1a2e;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            border: 1px solid #2d2d44;
+        }
+
+        .add-game h2 { margin-bottom: 16px; font-size: 16px; color: #818cf8; }
+
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        input, select {
+            flex: 1;
+            min-width: 140px;
+            padding: 10px 14px;
+            background: #0f0f1a;
+            border: 1px solid #2d2d44;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus { border-color: #818cf8; }
+
+        select option { background: #1a1a2e; }
+
+        .add-btn {
+            padding: 10px 24px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover { background: #4f46e5; }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .game-card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d2d44;
+            transition: border-color 0.2s;
+        }
+
+        .game-card:hover { border-color: #6366f1; }
+
+        .game-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+
+        .game-meta { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .PLAYING { background: #1d4ed8; color: #93c5fd; }
+        .COMPLETED { background: #065f46; color: #6ee7b7; }
+        .DROPPED { background: #7f1d1d; color: #fca5a5; }
+        .PLANNED { background: #4b5563; color: #d1d5db; }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 60px 0;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Game Library</h1>
+        <button onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="container">
+        <div class="add-game">
+            <h2>+ Add Game</h2>
+            <div class="form-row">
+                <input type="text" id="gameTitle" placeholder="Game title" />
+                <input type="text" id="gameGenre" placeholder="Genre" />
+                <input type="text" id="gamePlatform" placeholder="Platform" />
+                <input type="number" id="gameYear" placeholder="Year" />
+                <select id="gameStatus">
+                    <option value="PLANNED">Planned</option>
+                    <option value="PLAYING">Playing</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="DROPPED">Dropped</option>
+                </select>
+                <button class="add-btn" onclick="addGame()">Add</button>
+            </div>
+        </div>
+
+        <div class="games-grid" id="gamesGrid">
+            <div class="empty">Loading your games...</div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'index.html';
+
+        const API = 'http://127.0.0.1:8080';
+        let currentUser = null;
+
+        async function fetchWithAuth(url, options = {}) {
+            return fetch(url, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    ...options.headers
+                }
+            });
+        }
+
+        async function loadGames() {
+            const res = await fetchWithAuth(`${API}/api/entries`);
+            const entries = await res.json();
+            const grid = document.getElementById('gamesGrid');
+
+            if (entries.length === 0) {
+                grid.innerHTML = '<div class="empty">No games yet. Add your first game! </div>';
+                return;
+            }
+
+            grid.innerHTML = entries.map(entry => `
+                <div class="game-card">
+                    <div class="game-title">${entry.game.title}</div>
+                    <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
+                    <span class="status-badge ${entry.status}">${entry.status}</span>
+                </div>
+            `).join('');
+        }
+
+        async function addGame() {
+            const title = document.getElementById('gameTitle').value;
+            const genre = document.getElementById('gameGenre').value;
+            const platform = document.getElementById('gamePlatform').value;
+            const releaseYear = document.getElementById('gameYear').value;
+            const status = document.getElementById('gameStatus').value;
+
+            if (!title) return alert('Please enter a game title');
+
+            // 1. Сначала создаём игру
+            const gameRes = await fetchWithAuth(`${API}/api/games`, {
+                method: 'POST',
+                body: JSON.stringify({ title, genre, platform, releaseYear: parseInt(releaseYear), coverUrl: '' })
+            });
+            const game = await gameRes.json();
+
+            // 2. Получаем пользователей
+            const usersRes = await fetchWithAuth(`${API}/api/users/me`);
+            const user = await usersRes.json();
+
+            // 3. Создаём запись в коллекции
+            await fetchWithAuth(`${API}/api/entries`, {
+                method: 'POST',
+                body: JSON.stringify({ game: { id: game.id }, user: { id: user.id }, status })
+            });
+
+            // Очищаем поля
+            document.getElementById('gameTitle').value = '';
+            document.getElementById('gameGenre').value = '';
+            document.getElementById('gamePlatform').value = '';
+            document.getElementById('gameYear').value = '';
+
+            loadGames();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        }
+
+        loadGames();
+    </script>
+</body>
+</html>

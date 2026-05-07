@@ -1,6 +1,7 @@
 package com.gamelibrary.gamelibrary.service;
 
 import com.gamelibrary.gamelibrary.entity.GameEntry;
+import com.gamelibrary.gamelibrary.entity.GameStatus;
 import com.gamelibrary.gamelibrary.repository.GameEntryRepository;
 import com.gamelibrary.gamelibrary.repository.GameRepository;
 import com.gamelibrary.gamelibrary.repository.UserRepository;
@@ -44,5 +45,11 @@ public class GameEntryService {
 
   public List<GameEntry> getEntriesByUsername(String username) {
     return gameEntryRepository.findByUserUsername(username);
+  }
+
+  public GameEntry updateStatus(String id, String status) {
+    GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
+    entry.setStatus(GameStatus.valueOf(status));
+    return gameEntryRepository.save(entry);
   }
 }

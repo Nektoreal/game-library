@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 
 @RestController //Sptirng boot that this class handles HTTP requests
 @RequestMapping("/api/entries") //All methods are available by this "Path"
@@ -30,5 +32,10 @@ public class GameEntryController {
   @DeleteMapping("/{id}") //handless HTTP requests "DELETE /api/gameEntries/{id}"
   public void deleteGameEntry(@PathVariable String id){ //take the {id} from the URL and pass it into the method
     gameEntryService.deleteGameEntry(id);
+  }
+
+  @PutMapping("/{id}/status")
+  public GameEntry updateStatus(@PathVariable String id, @RequestBody Map<String, String> body) {
+    return gameEntryService.updateStatus(id, body.get("status"));
   }
 }

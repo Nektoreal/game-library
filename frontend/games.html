@@ -81,6 +81,24 @@
 
         .add-btn:hover { background: #4f46e5; }
 
+
+        .filter-btn {
+            padding: 6px 16px; 
+            background:#1a1a2e;
+            color: white; 
+            border: none;
+            border-radius: 20px; 
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        } 
+          .filter-btn:hover { background: #4f46e5; }
+
+          .active {
+            background: #4f46e5;
+          }
+
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -145,7 +163,14 @@
                 <button class="add-btn" onclick="addGame()">Add</button>
             </div>
         </div>
-
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+            <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')" >All</button>
+            <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
+            <button id="filter-PLAYING" class="filter-btn" onclick="filterGames('PLAYING')">Playing</button>
+            <button id="filter-DROPPED" class="filter-btn" onclick="filterGames('DROPPED')">Dropped</button>
+            <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
+        </div>
+        
         <div class="games-grid" id="gamesGrid">
             <div class="empty">Loading your games...</div>
         </div>
@@ -175,17 +200,56 @@
             const grid = document.getElementById('gamesGrid');
 
             if (entries.length === 0) {
-                grid.innerHTML = '<div class="empty">No games yet. Add your first game! </div>';
+                grid.innerHTML = '<div class="empty">No games yet. Add your first game!</div>';
                 return;
             }
 
-            grid.innerHTML = entries.map(entry => `
+    // Загружаем рецензии для каждой игры
+            const entriesWithRatings = await Promise.all(entries.map(async entry => {
+                const revRes = await fetchWithAuth(`${API}/api/reviews/game/${entry.game.id}`);
+                const reviews = await revRes.json();
+                const avg = reviews.length > 0 
+                    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+                    : null;
+                return { ...entry, avgRating: avg };
+            }));
+            allEntries = entriesWithRatings;
+                grid.innerHTML = entriesWithRatings.map(entry => `
                 <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer">
                     <div class="game-title">${entry.game.title}</div>
                     <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-                    <div style = "display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
                         <span class="status-badge ${entry.status}">${entry.status}</span>
-                        <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
+                        <div style="display:flex; align-items:center; gap:8px">
+                            ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
+                            <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterGames(status) {
+            const filtered = status === 'ALL' ? allEntries : allEntries.filter(entry => entry.status === status);
+            
+            const grid = document.getElementById('gamesGrid');
+
+            const filterButtons = document.querySelectorAll('.filter-btn');
+
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`filter-${status}`).classList.add('active');
+
+
+            grid.innerHTML = filtered.map(entry => 
+                `<div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer">
+                    <div class="game-title">${entry.game.title}</div>
+                    <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+                        <span class="status-badge ${entry.status}">${entry.status}</span>
+                        <div style="display:flex; align-items:center; gap:8px">
+                            ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
+                            <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -248,10 +312,14 @@
         }
 
         let selectedGameId = null;
+        let selectedEntryId = null;
+
+        let allEntries = null;
 
         function openSidebar(entry) {
             selectedGameId = entry.game.id;
-
+            selectedEntryId = entry.id;
+            
             document.getElementById('sidebar-title').textContent = entry.game.title;
             document.getElementById('sidebar-meta').textContent = 
                 `${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}`;
@@ -260,6 +328,7 @@
             loadReviews(entry.game.id);
             document.getElementById('sidebar').style.transform = 'translateX(0)';
             document.getElementById('overlay').style.display = 'block'; 
+            document.getElementById('status-select').value = entry.status;
         }
 
         function closeSidebar(){
@@ -320,6 +389,15 @@
                 alert('Error: ' + Object.values(error).join(', '));
             }
         }
+
+        async function updateStatus(newStatus) {
+            const entryId = selectedEntryId;
+            await fetchWithAuth(`${API}/api/entries/${entryId}/status`, {
+                method: 'PUT',
+                body: JSON.stringify({ status: newStatus })
+            });
+            loadGames();
+        }
     </script>
 
     <div id="overlay" onclick="closeSidebar()" style="
@@ -351,6 +429,21 @@
     <div id="sidebar-meta" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;"></div>
 
     <div id="sidebar-status" style="margin-bottom: 24px;"></div>
+    <select id="status-select" onchange="updateStatus(this.value)" style="
+        width: 100%;
+        padding: 10px;
+        background: #0f0f1a;
+        border: 1px solid #2d2d44;
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 14px;
+        margin-bottom: 16px;
+    ">
+        <option value="PLANNED">Planned</option>
+        <option value="PLAYING">Playing</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="DROPPED">Dropped</option>
+    </select>
 
     <hr style="border-color: #2d2d44; margin-bottom: 24px;">
 

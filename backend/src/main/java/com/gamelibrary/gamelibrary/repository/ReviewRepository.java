@@ -10,4 +10,5 @@ import com.gamelibrary.gamelibrary.entity.Review;
 public interface ReviewRepository extends JpaRepository<Review, String>{
 
   List<Review> findByGameId(String gameId);
+  List<Review> findByUserUsername(String username);
 }

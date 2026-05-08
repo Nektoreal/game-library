@@ -1,6 +1,8 @@
 package com.gamelibrary.gamelibrary.controller;
 
 import com.gamelibrary.gamelibrary.entity.Review;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,5 +31,11 @@ public class ReviewController {
   @PostMapping
   public Review addReview(@RequestBody Review review){
     return reviewService.addReview(review);
+  }
+
+  @GetMapping("/me")
+  public List<Review> getReviewsByUsername(Authentication authentication){
+    String username = authentication.getName();
+    return reviewService.getReviewByUsername(username);
   }
 }

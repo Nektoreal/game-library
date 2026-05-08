@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f1a;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: #1a1a2e;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d2d44;
+        }
+
+        nav h1 { color: #818cf8; font-size: 20px; }
+
+        nav button {
+            background: transparent;
+            border: 1px solid #6366f1;
+            color: #818cf8;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        nav button:hover { background: #6366f1; color: white; }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 60px 0;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Game Library</h1>
+
+        <div>
+            <button onclick="window.location.href = 'games.html'">Games</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="profile-avatar" style="width: 100px; height: 100px; border-radius: 25%; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+          P
+        </div>
+
+        <div id="profile-username" style="font-size: 24px; font-weight: 600; margin-top: 16px;">username</div>
+        <div id="profile-email" style="font-size: 14px; color: #6b7280; margin-top: 4px;">email</div>
+
+        <div style="display: flex; gap: 16px; margin-top: 32px;">
+          <!--Playing-->
+          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center;min-width: 120px;">
+            <div id="count-playing" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
+            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Playing</div>
+          </div>
+          <!--Dropped-->
+          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center;min-width: 120px;">
+            <div id="count-dropped" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
+            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Dropped</div>
+          </div>
+          <!--Planned-->
+          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center;min-width: 120px;">
+            <div id="count-planned" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
+            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Planned</div>
+          </div>
+          <!--Completed-->
+          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center; min-width: 120px;">
+            <div id="count-completed" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
+            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Completed</div>
+          </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'index.html';
+
+        const API = 'http://127.0.0.1:8080';
+
+        async function fetchWithAuth(url, options = {}) {
+            return fetch(url, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    ...options.headers
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        }
+
+        async function loadProfile() {
+            const userRes = await fetchWithAuth(`${API}/api/users/me`);
+            const user = await userRes.json();
+            
+            document.getElementById('profile-username').textContent = user.username;
+            document.getElementById('profile-email').textContent = user.email;
+            document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
+
+            const entriesRes = await fetchWithAuth(`${API}/api/entries`);
+            const entries = await entriesRes.json();
+
+            document.getElementById('count-playing').textContent = entries.filter(e => e.status === 'PLAYING').length;
+
+            document.getElementById('count-dropped').textContent = entries.filter(e => e.status === 'DROPPED').length;
+
+            document.getElementById('count-planned').textContent = entries.filter(e => e.status === 'PLANNED').length;
+
+            document.getElementById('count-completed').textContent = entries.filter(e => e.status === 'COMPLETED').length;
+        }
+        loadProfile();
+    </script>
+</body>
+</html>

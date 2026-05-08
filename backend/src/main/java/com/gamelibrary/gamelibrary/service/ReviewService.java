@@ -40,4 +40,7 @@ public class ReviewService {
   public List<Review> getReviewByGameId(String id){
       return reviewRepository.findByGameId(id);
   }
+  public List<Review> getReviewByUsername(String username) {
+    return reviewRepository.findByUserUsername(username);
+  }
 }

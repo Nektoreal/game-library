@@ -145,33 +145,60 @@
             transition: opacity 0.2s;
         }
     </style>
-</head>
-<body>
-    <nav>
-        <h1>Game Library</h1>
-        <div>
-            <button onclick="window.location.href='profile.html'">Profile</button>
-            <button onclick="logout()">Logout</button>
-        </div>
-    </nav>
+    </head>
+                <body>
+                    <nav>
+                        <h1>Game Library</h1>
+                        <div>
+                            <button onclick="window.location.href='profile.html'">Profile</button>
+                            <button onclick="logout()">Logout</button>
+                        </div>
+                    </nav>
 
-    <div class="container">
-        <div class="add-game">
-            <h2>+ Add Game</h2>
-            <div class="form-row">
-                <input type="text" id="gameTitle" placeholder="Game title" />
-                <input type="text" id="gameGenre" placeholder="Genre" />
-                <input type="text" id="gamePlatform" placeholder="Platform" />
-                <input type="number" id="gameYear" placeholder="Year" />
-                <select id="gameStatus">
-                    <option value="PLANNED">Planned</option>
-                    <option value="PLAYING">Playing</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="DROPPED">Dropped</option>
-                </select>
-                <button class="add-btn" onclick="addGame()">Add</button>
+                    <div class="container">
+                        <div class="add-game">
+                            <h2>+ Add Game</h2>
+                            <div class="form-row">
+                    <div style="position: relative; flex: 1; min-width: 140px;">
+                        <input type="text" id="gameTitle" placeholder="Search for a game..." oninput="searchGames(this.value)" style="width: 100%;"/>
+                        <div id="search-result" style="
+                            position: absolute;
+                            background: #1a1a2e;
+                            border: 1px solid #2d2d44;
+                            border-radius: 8px;
+                            width: 100%;
+                            max-height: 300px;
+                            overflow-y: auto;
+                            z-index: 100;
+                            display: none;
+                        "></div>
+                    </div>
+                    <select id="gameStatus">
+                        <option value="PLANNED">Planned</option>
+                        <option value="PLAYING">Playing</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="DROPPED">Dropped</option>
+                    </select>
+                    <button class="add-btn" onclick="addGame()">Add</button>
+                    <button class="add-btn" onclick="showManualForm()">Add manually</button>
+                </div>
+
+                <!--Hide form for manually-->
+                <div id="manual-form" style="display: none; margin-top: 16px;">
+                    <div class="form-row">
+                        <input type="text" id="gameGenre" placeholder="Genre" />
+                        <input type="text" id="gamePlatform" placeholder="Platform" />
+                        <input type="number" id="gameYear" placeholder="Year" />
+                        <select id="gameStatusManual">
+                            <option value="PLANNED">Planned</option>
+                            <option value="PLAYING">Playing</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="DROPPED">Dropped</option>
+                        </select>
+                        <button class="add-btn" onclick="addGame()">Add</button>
+                    </div>
+                </div>
             </div>
-        </div>
         <div style="display: flex; gap: 8px; margin-bottom: 20px;">
             <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')" >All</button>
             <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
@@ -271,7 +298,11 @@
             const genre = document.getElementById('gameGenre').value;
             const platform = document.getElementById('gamePlatform').value;
             const releaseYear = document.getElementById('gameYear').value;
-            const status = document.getElementById('gameStatus').value;
+            const manualForm = document.getElementById('manual-form');
+            const isManual = manualForm.style.display !== 'none';
+            const status = isManual
+                ? document.getElementById('gameStatusManual').value
+                : document.getElementById('gameStatus').value;
 
             if (!title) return alert('Please enter a game title');
 
@@ -423,6 +454,41 @@
                 }
             )
         }
+        const RAWG_KEY = '7f894402cc6d4e9d82c7aa85dda167a0';
+
+        async function  searchGames(query) {
+            const results = document.getElementById('search-result');
+
+            if (query.length < 2) {
+                results.style.display = 'none';
+                return;
+            }
+
+            const res = await fetch(`https://api.rawg.io/api/games?key=${RAWG_KEY}&search=${query}&page_size=5`);
+            const data = await res.json();
+
+            results.style.display = 'block';
+            results.innerHTML = data.results.map(game => `
+            <div onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})" style="padding: 10px; cursor: pointer;">
+                ${game.name}
+            </div>
+        `).join('');
+        }
+
+        function selectGame(game) {
+            document.getElementById('gameTitle').value = game.name;
+            document.getElementById('gameGenre').value = game.genres[0].name;
+            document.getElementById('gamePlatform').value = game.parent_platforms[0].platform.name;
+            document.getElementById('gameYear').value = game.released.substring(0,4);
+            document.getElementById('search-result').style.display= 'none';
+             document.getElementById('manual-form').style.display = 'block';
+        }
+
+        function showManualForm(){
+            const form = document.getElementById('manual-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
     </script>
 
     <div id="overlay" onclick="closeSidebar()" style="

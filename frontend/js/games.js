@@ -142,6 +142,7 @@
         }
 
         async function deleteGame(id) {
+            if(!confirm('Are you sure you want to delete this game?')) return;
             await fetchWithAuth(`${API}/api/entries/${id}`, {
                 method: 'DELETE'
             });

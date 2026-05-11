@@ -27,6 +27,13 @@
                 return { ...entry, avgRating: avg };
             }));
             allEntries = entriesWithRatings;
+
+            document.getElementById('filter-ALL').textContent = `All (${entriesWithRatings.length})`;
+            document.getElementById('filter-PLAYING').textContent = `Playing (${entriesWithRatings.filter(e => e.status ==='PLAYING').length})`;
+            document.getElementById('filter-PLANNED').textContent = `Planned (${entriesWithRatings.filter(e => e.status ==='PLANNED').length})`;
+            document.getElementById('filter-DROPPED').textContent = `Dropped (${entriesWithRatings.filter(e => e.status ==='DROPPED').length})`;
+            document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status ==='COMPLETED').length})`;
+
             grid.innerHTML = entriesWithRatings.map(entry => `
             <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
             ${entry.game.coverUrl ? `
@@ -287,3 +294,4 @@
             const form = document.getElementById('manual-form');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
+loadGames();

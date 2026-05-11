@@ -162,7 +162,7 @@
                             <h2>+ Add Game</h2>
                             <div class="form-row">
                     <div style="position: relative; flex: 1; min-width: 140px;">
-                        <input type="text" id="gameTitle" placeholder="Search for a game..." oninput="searchGames(this.value)" style="width: 100%;"/>
+                        <input type="text" id="gameTitle" placeholder="Search for a game...or Game title" oninput="searchGames(this.value)" style="width: 100%;"/>
                         <div id="search-result" style="
                             position: absolute;
                             background: #1a1a2e;
@@ -197,7 +197,7 @@
                             <option value="COMPLETED">Completed</option>
                             <option value="DROPPED">Dropped</option>
                         </select>
-                        <button class="add-btn" onclick="addGame()">Add</button>
+                        <!--<button class="add-btn" onclick="addGame()">Add</button>-->
                     </div>
                 </div>
             </div>
@@ -215,6 +215,12 @@
     </div>
 
     <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+            closeSidebar();
+            }
+        });
+
         const token = localStorage.getItem('token');
         if (!token) window.location.href = 'index.html';
 
@@ -257,9 +263,12 @@
             grid.innerHTML = entriesWithRatings.map(entry => `
             <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
             ${entry.game.coverUrl ? `
-                <img src="${entry.game.coverUrl}" style="width:100%; height:160px; object-fit:cover;" />
-             ` : `
-                <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
+        <div style="position:relative; height:160px; overflow:hidden;">
+             <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
+            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
+                </div>
+                 ` : `
+                 <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
             `}
             <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
                 <div class="game-title">${entry.game.title}</div>
@@ -290,9 +299,12 @@
             grid.innerHTML = filtered.map(entry => `
             <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
             ${entry.game.coverUrl ? `
-                <img src="${entry.game.coverUrl}" style="width:100%; height:160px; object-fit:cover;" />
+            <div style="position:relative; height:160px; overflow:hidden;">
+            <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
+            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
+                </div>
                 ` : `
-                <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
+                <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center;             justify-content:center; color:#6b7280;">No cover</div>
             `}
             <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
                 <div class="game-title">${entry.game.title}</div>
@@ -417,7 +429,8 @@
                     <span style="color:#818cf8; font-size:13px">${review.user.username}</span>
                     <span style="color:#f59e0b; font-size:13px">⭐ ${review.rating}/10</span>
                 </div>
-                <p style ="color:#d1d5db; font-size:13px; margin:0">${review.text}</p>
+                <p style="color:#d1d5db; font-size:13px; margin:0 0 8px 0">${review.text}</p>
+                <span style="color:#4b5563; font-size:11px">${new Date(review.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             `).join('');
         }
@@ -448,6 +461,7 @@
         
                 document.getElementById('review-text').value = '';
                 loadReviews(selectedGameId);
+                loadGames();
             } else {
                 const error = await res.json();
                 alert('Error: ' + Object.values(error).join(', '));
@@ -528,7 +542,7 @@
     <div id="sidebar" style="
     position: fixed;
     top: 0; right: 0;
-    width: 400px; height: 100%;
+    width: 500px; height: 100%;
     background: #1a1a2e;
     border-left: 1px solid #2d2d44;
     z-index: 100;
@@ -539,16 +553,19 @@
     ">
     <div id="sidebar-banner" style="
         width: calc(100% + 48px);
-        height: 120px;
+        height: 200px;
         background: #2d2d44;
         background-size: cover;
         background-position: center;
         margin: -24px -24px 20px -24px;
-    "></div>
+        position: relative;
+    ">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
+    </div>
 
     <!-- остальное содержимое сайдбара -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 id="sidebar-title" style="color: #818cf8; font-size: 18px;"></h2>
+        <h2 id="sidebar-title" style="color: #818cf8; font-size: 30px;"></h2>
         <button onclick="closeSidebar()" style="background: transparent; border: none; color: #6b7280; font-size: 20px; cursor: pointer">✕</button>
     </div>
 
@@ -571,10 +588,10 @@
         <option value="DROPPED">Dropped</option>
     </select>
 
-    <hr style="border-color: #2d2d44; margin-bottom: 24px;">
+    <!-- <hr style="border-color: #2d2d44; margin-bottom: 24px;">
 
-    <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Review</h3>
-    <div id="sidebar-reviews"></div>
+    <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Reviews</h3>
+    <div id="sidebar-reviews"></div> -->
 
     <hr style="border-color: #2d2d44; margin: 24px 0;">
 
@@ -599,6 +616,11 @@
     <textarea id="review-text" placeholder="Write review..." style="width: 100%; height:100px; margin-left: 0px; margin-bottom: 8px; padding: 10px; background: #0f0f1a; border: 1px solid #2d2d44; border-radius: 8px; color: #fff; resize: none;"></textarea>
 
     <button onclick="submitReview()" style="width: 100%; padding: 10px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">Send</button>
+
+    <hr style="border-color: #2d2d44; margin-bottom: 24px;">
+
+    <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Reviews</h3>
+    <div id="sidebar-reviews"></div>
     </div>
 </body>
 </html>

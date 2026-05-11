@@ -111,6 +111,8 @@
             padding: 20px;
             border: 1px solid #2d2d44;
             transition: border-color 0.2s;
+            overflow: hidden;
+            position: relative;
         }
 
         .game-card:hover { border-color: #6366f1; }
@@ -253,25 +255,25 @@
             }));
             allEntries = entriesWithRatings;
             grid.innerHTML = entriesWithRatings.map(entry => `
-                <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0;">
-                    ${entry.game.coverUrl ? `
-                        <img src="${entry.game.coverUrl}" style="width:100%; height:160px; object-fit:cover;" />
-                    ` : `
-                        <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
-                    `}
-                    <div style="padding:16px;">
-                    <div class="game-title">${entry.game.title}</div>
-                    <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
-                        <span class="status-badge ${entry.status}">${entry.status}</span>
-                        <div style="display:flex; align-items:center; gap:8px">
-                            ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
-                                <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px    10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
-                            </div>
+            <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
+            ${entry.game.coverUrl ? `
+                <img src="${entry.game.coverUrl}" style="width:100%; height:160px; object-fit:cover;" />
+             ` : `
+                <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
+            `}
+            <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
+                <div class="game-title">${entry.game.title}</div>
+                <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+                <span class="status-badge ${entry.status}">${entry.status}</span>
+                <div style="display:flex; align-items:center; gap:8px">
+                    ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
+                    <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
         }
 
         function filterGames(status) {
@@ -286,20 +288,20 @@
 
 
             grid.innerHTML = filtered.map(entry => `
-            <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0;">
+            <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
             ${entry.game.coverUrl ? `
-            <img src="${entry.game.coverUrl}" style="width:100%; height:160px; object-fit:cover;" />
+                <img src="${entry.game.coverUrl}" style="width:100%; height:160px; object-fit:cover;" />
                 ` : `
-            <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
+                <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
             `}
-            <div style="padding:16px;">
-            <div class="game-title">${entry.game.title}</div>
-            <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+            <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
+                <div class="game-title">${entry.game.title}</div>
+                <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
                 <span class="status-badge ${entry.status}">${entry.status}</span>
                 <div style="display:flex; align-items:center; gap:8px">
                     ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
-                     <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
+                    <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
                     </div>
                 </div>
             </div>
@@ -373,6 +375,12 @@
         let allEntries = null;
 
         function openSidebar(entry) {
+            const banner = document.getElementById('sidebar-banner');
+            if (entry.game.coverUrl){
+                banner.style.backgroundImage = `url('${entry.game.coverUrl}')`;
+            } else {
+                banner.style.backgroundImage = 'none';
+            }
             selectedGameId = entry.game.id;
             selectedEntryId = entry.id;
             
@@ -529,6 +537,16 @@
     overflow-y: auto;
     padding: 24px;
     ">
+    <div id="sidebar-banner" style="
+        width: calc(100% + 48px);
+        height: 120px;
+        background: #2d2d44;
+        background-size: cover;
+        background-position: center;
+        margin: -24px -24px 20px -24px;
+    "></div>
+
+    <!-- остальное содержимое сайдбара -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h2 id="sidebar-title" style="color: #818cf8; font-size: 18px;"></h2>
         <button onclick="closeSidebar()" style="background: transparent; border: none; color: #6b7280; font-size: 20px; cursor: pointer">✕</button>

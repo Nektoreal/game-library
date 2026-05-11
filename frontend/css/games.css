@@ -1,0 +1,86 @@
+.add-game {
+    background: #1a1a2e;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    border: 1px solid #2d2d44;
+}
+
+.add-game h2 { margin-bottom: 16px; font-size: 16px; color: #818cf8; }
+
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+input, select {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    background: #0f0f1a;
+    border: 1px solid #2d2d44;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus, select:focus { border-color: #818cf8; }
+
+select option { background: #1a1a2e; }
+
+.add-btn {
+    padding: 10px 24px;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.add-btn:hover { background: #4f46e5; }
+
+.filter-btn {
+    padding: 6px 16px;
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.filter-btn:hover { background: #4f46e5; }
+
+.active { background: #4f46e5; }
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.game-card {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #2d2d44;
+    transition: border-color 0.2s;
+    overflow: hidden;
+    position: relative;
+}
+
+.game-card:hover { border-color: #6366f1; }
+
+.game-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+
+.game-meta { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+
+.star {
+    opacity: 0.3;
+    cursor: pointer;
+    font-size: 20px;
+    transition: opacity 0.2s;
+}

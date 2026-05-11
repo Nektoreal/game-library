@@ -4,48 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f0f1a;
-            color: #ffffff;
-            min-height: 100vh;
-        }
-
-        nav {
-            background: #1a1a2e;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #2d2d44;
-        }
-
-        nav h1 { color: #818cf8; font-size: 20px; }
-
-        nav button {
-            background: transparent;
-            border: 1px solid #6366f1;
-            color: #818cf8;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        nav button:hover { background: #6366f1; color: white; }
-
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; }
-
-        .empty {
-            text-align: center;
-            color: #6b7280;
-            padding: 60px 0;
-            font-size: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <nav>
@@ -113,88 +72,7 @@
         </div>
     </div>
 
-    <script>
-        const token = localStorage.getItem('token');
-        if (!token) window.location.href = 'index.html';
-
-        const API = 'http://127.0.0.1:8080';
-
-        async function fetchWithAuth(url, options = {}) {
-            return fetch(url, {
-                ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    ...options.headers
-                }
-            });
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = 'index.html';
-        }
-
-        async function loadProfile() {
-            const userRes = await fetchWithAuth(`${API}/api/users/me`);
-            const user = await userRes.json();
-            
-            document.getElementById('profile-username').textContent = user.username;
-            document.getElementById('profile-email').textContent = user.email;
-            document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
-
-            const entriesRes = await fetchWithAuth(`${API}/api/entries`);
-            const entries = await entriesRes.json();
-
-            document.getElementById('count-playing').textContent = entries.filter(e => e.status === 'PLAYING').length;
-
-            document.getElementById('count-dropped').textContent = entries.filter(e => e.status === 'DROPPED').length;
-
-            document.getElementById('count-planned').textContent = entries.filter(e => e.status === 'PLANNED').length;
-
-            document.getElementById('count-completed').textContent = entries.filter(e => e.status === 'COMPLETED').length;
-
-            const reviewsRes = await fetchWithAuth(`${API}/api/reviews/me`);
-            const reviews = await reviewsRes.json();
-
-            const avgRating = reviews.length > 0
-                ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-                : null;
-
-            const genreCount = {};
-            entries.forEach(e => {
-                const genre = e.game.genre;
-                genreCount[genre] = (genreCount[genre] || 0) + 1;
-            });
-
-            const topGenres = Object.entries(genreCount)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0,3);
-
-
-            const lastReviews = reviews.slice(-3).reverse();
-
-            document.getElementById('avg-rating').textContent = avgRating || '—';
-            document.getElementById('member-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
-
-            document.getElementById('top-genres').innerHTML = topGenres.map(([genre, count]) => `
-                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2d2d44;">
-                    <span style="color:#ffffff;">${genre}</span>
-                    <span style="color:#6b7280;">${count} games</span>
-                </div>
-            `).join('');
-
-            document.getElementById('last-reviews').innerHTML = lastReviews.length > 0 ? lastReviews.map(r => `
-                <div style="padding:12px 0; border-bottom:1px solid #2d2d44;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <span style="color:#ffffff; font-size:14px;">${r.game.title}</span>
-                        <span style="color:#f59e0b; font-size:13px;">⭐ ${r.rating}/10</span>
-                    </div>
-                    <p style="color:#6b7280; font-size:13px;">${r.text}</p>
-                </div>
-            `).join('') : '<p style="color:#6b7280; font-size:14px;">No reviews yet</p>';
-        }
-        loadProfile();
-    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
 </body>
 </html>

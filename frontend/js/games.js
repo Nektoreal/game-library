@@ -1,105 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Game Library</title>
-    
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/games.css">
-    
-    </head>
-                <body>
-                    <nav>
-                        <h1>Game Library</h1>
-                        <div>
-                            <button onclick="window.location.href='profile.html'">Profile</button>
-                            <button onclick="logout()">Logout</button>
-                        </div>
-                    </nav>
-
-                    <div class="container">
-                        <div class="add-game">
-                            <h2>+ Add Game</h2>
-                            <div class="form-row">
-                    <div style="position: relative; flex: 1; min-width: 140px;">
-                        <input type="text" id="gameTitle" placeholder="Search for a game...or Game title" oninput="searchGames(this.value)" style="width: 100%;"/>
-                        <div id="search-result" style="
-                            position: absolute;
-                            background: #1a1a2e;
-                            border: 1px solid #2d2d44;
-                            border-radius: 8px;
-                            width: 100%;
-                            max-height: 300px;
-                            overflow-y: auto;
-                            z-index: 100;
-                            display: none;
-                        "></div>
-                    </div>
-                    <select id="gameStatus">
-                        <option value="PLANNED">Planned</option>
-                        <option value="PLAYING">Playing</option>
-                        <option value="COMPLETED">Completed</option>
-                        <option value="DROPPED">Dropped</option>
-                    </select>
-                    <button class="add-btn" onclick="addGame()">Add</button>
-                    <button class="add-btn" onclick="showManualForm()">Add manually</button>
-                </div>
-
-                <!--Hide form for manually-->
-                <div id="manual-form" style="display: none; margin-top: 16px;">
-                    <div class="form-row">
-                        <input type="text" id="gameGenre" placeholder="Genre" />
-                        <input type="text" id="gamePlatform" placeholder="Platform" />
-                        <input type="number" id="gameYear" placeholder="Year" />
-                        <select id="gameStatusManual">
-                            <option value="PLANNED">Planned</option>
-                            <option value="PLAYING">Playing</option>
-                            <option value="COMPLETED">Completed</option>
-                            <option value="DROPPED">Dropped</option>
-                        </select>
-                        <!--<button class="add-btn" onclick="addGame()">Add</button>-->
-                    </div>
-                </div>
-            </div>
-        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-            <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')" >All</button>
-            <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
-            <button id="filter-PLAYING" class="filter-btn" onclick="filterGames('PLAYING')">Playing</button>
-            <button id="filter-DROPPED" class="filter-btn" onclick="filterGames('DROPPED')">Dropped</button>
-            <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
-        </div>
-        
-        <div class="games-grid" id="gamesGrid">
-            <div class="empty">Loading your games...</div>
-        </div>
-    </div>
-
-    <script>
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
             closeSidebar();
             }
         });
 
-        const token = localStorage.getItem('token');
-        if (!token) window.location.href = 'index.html';
-
-        const API = 'http://127.0.0.1:8080';
-        let currentUser = null;
-
         let selectedRating = 0;
 
-        async function fetchWithAuth(url, options = {}) {
-            return fetch(url, {
-                ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    ...options.headers
-                }
-            });
-        }
 
         async function loadGames() {
             const res = await fetchWithAuth(`${API}/api/entries`);
@@ -227,13 +133,6 @@
 
             loadGames();
         }
-
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = 'index.html';
-        }
-
-        loadGames();
 
         async function deleteGame(id) {
             await fetchWithAuth(`${API}/api/entries/${id}`, {
@@ -388,103 +287,3 @@
             const form = document.getElementById('manual-form');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
-
-    </script>
-
-    <div id="overlay" onclick="closeSidebar()" style="
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 99;
-    "></div>
-
-    <div id="sidebar" style="
-    position: fixed;
-    top: 0; right: 0;
-    width: 500px; height: 100%;
-    background: #1a1a2e;
-    border-left: 1px solid #2d2d44;
-    z-index: 100;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    overflow-y: auto;
-    padding: 24px;
-    ">
-    <div id="sidebar-banner" style="
-        width: calc(100% + 48px);
-        height: 200px;
-        background: #2d2d44;
-        background-size: cover;
-        background-position: center;
-        margin: -24px -24px 20px -24px;
-        position: relative;
-    ">
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
-    </div>
-
-    <!-- остальное содержимое сайдбара -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 id="sidebar-title" style="color: #818cf8; font-size: 30px;"></h2>
-        <button onclick="closeSidebar()" style="background: transparent; border: none; color: #6b7280; font-size: 20px; cursor: pointer">✕</button>
-    </div>
-
-    <div id="sidebar-meta" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;"></div>
-
-    <div id="sidebar-status" style="margin-bottom: 24px;"></div>
-    <select id="status-select" onchange="updateStatus(this.value)" style="
-        width: 100%;
-        padding: 10px;
-        background: #0f0f1a;
-        border: 1px solid #2d2d44;
-        border-radius: 8px;
-        color: #ffffff;
-        font-size: 14px;
-        margin-bottom: 16px;
-    ">
-        <option value="PLANNED">Planned</option>
-        <option value="PLAYING">Playing</option>
-        <option value="COMPLETED">Completed</option>
-        <option value="DROPPED">Dropped</option>
-    </select>
-
-    <!-- <hr style="border-color: #2d2d44; margin-bottom: 24px;">
-
-    <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Reviews</h3>
-    <div id="sidebar-reviews"></div> -->
-
-    <hr style="border-color: #2d2d44; margin: 24px 0;">
-
-    <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Add Review</h3>
-    
-    <!--<input type="number" id="review-rating" placeholder="Rating 1-10" min="1" max="10" style="width: 100%; margin-bottom: 10px; padding: 10px; background: #0f0f1a; border: 1px solid #2d2d44; border-radius: 8px; color: #fff;"/>-->
-    
-
-    <div style="margin-bottom: 20px;">
-        <span class="star" data-value="1" onclick="setRating(1)">⭐</span>
-        <span class="star" data-value="2" onclick="setRating(2)">⭐</span>
-        <span class="star" data-value="3" onclick="setRating(3)">⭐</span>
-        <span class="star" data-value="4" onclick="setRating(4)">⭐</span>
-        <span class="star" data-value="5" onclick="setRating(5)">⭐</span>
-        <span class="star" data-value="6" onclick="setRating(6)">⭐</span>
-        <span class="star" data-value="7" onclick="setRating(7)">⭐</span>
-        <span class="star" data-value="8" onclick="setRating(8)">⭐</span>
-        <span class="star" data-value="9" onclick="setRating(9)">⭐</span>
-        <span class="star" data-value="10" onclick="setRating(10)">⭐</span>
-    </div>
-
-    <textarea id="review-text" placeholder="Write review..." style="width: 100%; height:100px; margin-left: 0px; margin-bottom: 8px; padding: 10px; background: #0f0f1a; border: 1px solid #2d2d44; border-radius: 8px; color: #fff; resize: none;"></textarea>
-
-    <button onclick="submitReview()" style="width: 100%; padding: 10px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">Send</button>
-
-    <hr style="border-color: #2d2d44; margin-bottom: 24px;">
-
-    <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Reviews</h3>
-    <div id="sidebar-reviews"></div>
-    </div>
-
-    <script src="js/auth.js"></script>
-    <script src="js/games.js"></script>
-</body>
-</html>

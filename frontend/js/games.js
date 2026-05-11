@@ -64,6 +64,11 @@
             
             const grid = document.getElementById('gamesGrid');
 
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty">No ${status.toLowerCase()} games yet</div>`;
+                return;
+            }
+
             const filterButtons = document.querySelectorAll('.filter-btn');
 
             filterButtons.forEach(btn => btn.classList.remove('active'));
@@ -296,3 +301,19 @@
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
 loadGames();
+
+document.addEventListener('click', function(e) {
+    const searchResult = document.getElementById('search-result');
+    const gameTitle = document.getElementById('gameTitle');
+    
+    if (!gameTitle.contains(e.target) && !searchResult.contains(e.target)) {
+        searchResult.style.display = 'none';
+    } else {
+
+    }
+});
+
+window.addEventListener('scroll', function() {
+    const btn = document.getElementById('back-to-top');
+    btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+});

@@ -58,7 +58,7 @@
     </nav>
 
     <div class="container">
-        <div id="profile-avatar" style="width: 100px; height: 100px; border-radius: 25%; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+        <div id="profile-avatar" style="width: 100px; height: 100px; border-radius: 25%; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-wrap: wrap;">
           P
         </div>
 
@@ -86,6 +86,30 @@
             <div id="count-completed" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
             <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Completed</div>
           </div>
+        </div>
+
+        <!-- Средняя оценка и дата регистрации -->
+        <div style="display:flex; gap:16px; margin-top:24px;">
+            <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; text-align:center; min-width:120px;">
+                <div id="avg-rating" style="font-size:32px; font-weight:600; color:#f59e0b;">—</div>
+                <div style="font-size:13px; color:#6b7280; margin-top:4px;">Avg Rating</div>
+            </div>
+            <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; text-align:center; min-width:120px;">
+                <div style="font-size:13px; color:#6b7280; margin-top:1px;">Member since</div>
+                <div id="member-since" style="font-size:20px; font-weight:600; color:#818cf8; margin: top 5px;">—</div>
+            </div>
+        </div>
+
+        <!-- Топ жанры -->
+        <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; margin-top:24px;">
+            <h3 style="font-size:15px; color:#818cf8; margin-bottom:16px;">Top Genres</h3>
+            <div id="top-genres"></div>
+        </div>
+
+        <!-- Последние рецензии -->
+        <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; margin-top:24px;">
+            <h3 style="font-size:15px; color:#818cf8; margin-bottom:16px;">Recent Reviews</h3>
+            <div id="last-reviews"></div>
         </div>
     </div>
 
@@ -129,6 +153,46 @@
             document.getElementById('count-planned').textContent = entries.filter(e => e.status === 'PLANNED').length;
 
             document.getElementById('count-completed').textContent = entries.filter(e => e.status === 'COMPLETED').length;
+
+            const reviewsRes = await fetchWithAuth(`${API}/api/reviews/me`);
+            const reviews = await reviewsRes.json();
+
+            const avgRating = reviews.length > 0
+                ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+                : null;
+
+            const genreCount = {};
+            entries.forEach(e => {
+                const genre = e.game.genre;
+                genreCount[genre] = (genreCount[genre] || 0) + 1;
+            });
+
+            const topGenres = Object.entries(genreCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0,3);
+
+
+            const lastReviews = reviews.slice(-3).reverse();
+
+            document.getElementById('avg-rating').textContent = avgRating || '—';
+            document.getElementById('member-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+
+            document.getElementById('top-genres').innerHTML = topGenres.map(([genre, count]) => `
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2d2d44;">
+                    <span style="color:#ffffff;">${genre}</span>
+                    <span style="color:#6b7280;">${count} games</span>
+                </div>
+            `).join('');
+
+            document.getElementById('last-reviews').innerHTML = lastReviews.length > 0 ? lastReviews.map(r => `
+                <div style="padding:12px 0; border-bottom:1px solid #2d2d44;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <span style="color:#ffffff; font-size:14px;">${r.game.title}</span>
+                        <span style="color:#f59e0b; font-size:13px;">⭐ ${r.rating}/10</span>
+                    </div>
+                    <p style="color:#6b7280; font-size:13px;">${r.text}</p>
+                </div>
+            `).join('') : '<p style="color:#6b7280; font-size:14px;">No reviews yet</p>';
         }
         loadProfile();
     </script>

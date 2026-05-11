@@ -10,6 +10,8 @@
             const entriesRes = await fetchWithAuth(`${API}/api/entries`);
             const entries = await entriesRes.json();
 
+            document.getElementById('count-total').textContent = entries.length;
+
             document.getElementById('count-playing').textContent = entries.filter(e => e.status === 'PLAYING').length;
 
             document.getElementById('count-dropped').textContent = entries.filter(e => e.status === 'DROPPED').length;

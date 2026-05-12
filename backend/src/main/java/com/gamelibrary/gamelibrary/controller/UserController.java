@@ -1,6 +1,7 @@
 package com.gamelibrary.gamelibrary.controller;
 
 import com.gamelibrary.gamelibrary.entity.User;
+import com.gamelibrary.gamelibrary.entity.UserStatsDto;
 import com.gamelibrary.gamelibrary.service.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -34,5 +35,10 @@ public class UserController {
   @DeleteMapping("/{id}") //handless HTTP requests "DELETE /api/users/{id}"
   public void deleteUser(@RequestBody String id){ //take the {id} from the URL and pass it into the method
     userService.deleteUser(id); 
+  }
+
+  @GetMapping("/me/stats")
+  public UserStatsDto getUserStats(Authentication authentication) {
+    return userService.getUserStats(authentication.getName());
   }
 }

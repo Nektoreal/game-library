@@ -9,16 +9,15 @@
 
             const entriesRes = await fetchWithAuth(`${API}/api/entries`);
             const entries = await entriesRes.json();
+            
+            const statsRes = await fetchWithAuth(`${API}/api/users/me/stats`);
+            const stats = await statsRes.json();
 
-            document.getElementById('count-total').textContent = entries.length;
-
-            document.getElementById('count-playing').textContent = entries.filter(e => e.status === 'PLAYING').length;
-
-            document.getElementById('count-dropped').textContent = entries.filter(e => e.status === 'DROPPED').length;
-
-            document.getElementById('count-planned').textContent = entries.filter(e => e.status === 'PLANNED').length;
-
-            document.getElementById('count-completed').textContent = entries.filter(e => e.status === 'COMPLETED').length;
+            document.getElementById('count-total').textContent = stats.totalGames;
+            document.getElementById('count-playing').textContent = stats.playing;
+            document.getElementById('count-dropped').textContent = stats.dropped;
+            document.getElementById('count-planned').textContent = stats.planned;
+            document.getElementById('count-completed').textContent = stats.completed;
 
             const reviewsRes = await fetchWithAuth(`${API}/api/reviews/me`);
             const reviews = await reviewsRes.json();

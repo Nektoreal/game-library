@@ -52,7 +52,10 @@ A full-stack web application for tracking your personal game collection. Built w
 ### Setup
 
 1. Clone the repository
-  git clone https://github.com/Nektoreal/game-library.git cd game-library
+```bash
+git clone https://github.com/Nektoreal/game-library.git
+cd game-library
+```
 
 2. Create PostgreSQL database
 ```sql
@@ -67,9 +70,10 @@ spring.datasource.password=YOUR_PASSWORD
 ```
 
 4. Run the backend
-
+```bash
 cd backend
 ./mvnw spring-boot:run
+```
 
 5. Open `frontend/index.html` with Live Server (VS Code extension)
 
@@ -79,10 +83,13 @@ Swagger UI available at: `http://localhost:8080/swagger-ui.html`
 
 ## Running Tests
 
+```bash
 cd backend
 ./mvnw test
+```
 
 ## Project Structure
+
 ```text
 game-library/
 ├── backend/

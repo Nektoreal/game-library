@@ -81,6 +81,7 @@ select option { background: #1a1a2e; }
 .star {
     opacity: 0.3;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 28px;
     transition: opacity 0.2s;
+    color: black;
 }

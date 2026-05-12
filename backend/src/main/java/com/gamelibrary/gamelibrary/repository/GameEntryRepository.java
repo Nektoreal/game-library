@@ -10,4 +10,6 @@ import com.gamelibrary.gamelibrary.entity.GameEntry;
 @Repository//key/point for Spring boot. Spring boot find this "key" and registers
 public interface GameEntryRepository extends JpaRepository<GameEntry, String>{ //this repo work with Games Table and Id type String
   List<GameEntry> findByUserUsername(String username);
+  boolean existsByUserIdAndGameId(String userId, String gameId);
+  boolean existsByUserUsernameAndGameTitle(String username, String gameTitle);
 }

@@ -35,6 +35,12 @@ public class GameEntryService {
 
     gameEntry.setUser(user);
     gameEntry.setGame(game);
+
+    boolean exists = gameEntryRepository.existsByUserUsernameAndGameTitle(user.getUsername(), game.getTitle());
+    if (exists) {
+        throw new RuntimeException("Game already in your collection");
+    }
+
     gameEntry.setAddedAt(LocalDateTime.now());
     return gameEntryRepository.save(gameEntry);
   }

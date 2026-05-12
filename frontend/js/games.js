@@ -1,3 +1,4 @@
+        //Close sidebar with "ESC" - key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
             closeSidebar();
@@ -7,8 +8,7 @@
         let selectedRating = 0;
         
         let currentEntries = null;
-
-
+//Load Games from database
         async function loadGames() {
             const res = await fetchWithAuth(`${API}/api/entries`);
             const entries = await res.json();
@@ -19,7 +19,7 @@
                 return;
             }
 
-    // Загружаем рецензии для каждой игры
+    // Loading reviews for each game
             const entriesWithRatings = await Promise.all(entries.map(async entry => {
                 const revRes = await fetchWithAuth(`${API}/api/reviews/game/${entry.game.id}`);
                 const reviews = await revRes.json();
@@ -36,7 +36,7 @@
             document.getElementById('filter-PLANNED').textContent = `Planned (${entriesWithRatings.filter(e => e.status ==='PLANNED').length})`;
             document.getElementById('filter-DROPPED').textContent = `Dropped (${entriesWithRatings.filter(e => e.status ==='DROPPED').length})`;
             document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status ==='COMPLETED').length})`;
-
+            //game card
             grid.innerHTML = entriesWithRatings.map(entry => `
             <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
             ${entry.game.coverUrl ? `
@@ -117,7 +117,7 @@
 
             if (!title) return alert('Please enter a game title');
 
-            // 1. Сначала создаём игру
+            // 1. First create a game
             const gameRes = await fetchWithAuth(`${API}/api/games`, {
                 method: 'POST',
                 body: JSON.stringify({ title, genre, platform, releaseYear: parseInt(releaseYear), coverUrl: selectedCoverUrl })
@@ -131,17 +131,23 @@
 
             const game = await gameRes.json();
 
-            // 2. Получаем пользователей
+            // 2. Getting users
             const usersRes = await fetchWithAuth(`${API}/api/users/me`);
             const user = await usersRes.json();
 
-            // 3. Создаём запись в коллекции
-            await fetchWithAuth(`${API}/api/entries`, {
+            // 3. Creating a record in a collection
+            const entryRes = await fetchWithAuth(`${API}/api/entries`, {
                 method: 'POST',
                 body: JSON.stringify({ game: { id: game.id }, user: { id: user.id }, status })
             });
 
-            // Очищаем поля
+            if (!entryRes.ok) {
+                const error = await entryRes.json();
+                alert("Error: " + error.message);
+                return;
+            }
+
+            // Clearing the fields
             document.getElementById('gameTitle').value = '';
             document.getElementById('gameGenre').value = '';
             document.getElementById('gamePlatform').value = '';

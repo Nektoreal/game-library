@@ -83,6 +83,7 @@ cd backend
 ./mvnw test
 
 ## Project Structure
+```text
 game-library/
 ├── backend/
 │   └── src/
@@ -95,8 +96,9 @@ game-library/
 │       │   └── service/
 │       └── test/
 └── frontend/
-├── css/
-├── js/
-├── index.html
-├── games.html
-└── profile.html
+    ├── css/
+    ├── js/
+    ├── index.html
+    ├── games.html
+    └── profile.html
+```

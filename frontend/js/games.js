@@ -269,6 +269,7 @@
                 method: 'PUT',
                 body: JSON.stringify({ status: newStatus })
             });
+            showToast(`Status updated to "${newStatus.toLowerCase()}"`, 'success');
             loadGames();
         }
 

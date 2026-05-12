@@ -93,6 +93,35 @@
 
         .error { color: #f87171; }
         .success { color: #34d399; }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-wrapper input{
+            margin-bottom: 0;
+            padding-left: 40px;
+        }
+
+        .input-wrapper .icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -100,10 +129,18 @@
     <div class="card">
         <h1>Game Library</h1>
         <p class="subtitle" id="formSubtitle">Sign in to your account</p>
-
-        <input type="text" id="username" placeholder="Username" />
-        <input type="email" id="email" placeholder="Email" style="display:none" />
-        <input type="password" id="password" placeholder="Password" />
+        <div class="input-wrapper">
+            <span class="icon">👤</span>
+            <input type="text" id="username" placeholder="Username" />
+        </div>
+        <div class="input-wrapper" id="emailWrapper" style="display: none;">
+            <span class="icon">✉️</span>
+            <input type="email" id="email" placeholder="Email" />
+        </div>
+        <div class="input-wrapper">
+            <span class="icon">🔒</span>
+            <input type="password" id="password" placeholder="Password" />
+        </div>
 
         <button id="submitBtn" onclick="handleSubmit()">Login</button>
 
@@ -121,7 +158,7 @@
 
         function toggleForm() {
             isLogin = !isLogin;
-            document.getElementById('email').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('emailWrapper').style.display = isLogin ? 'none' : 'block';
             document.getElementById('formSubtitle').textContent = isLogin ? 'Sign in to your account' : 'Create a new account';
             document.getElementById('submitBtn').textContent = isLogin ? 'Login' : 'Register';
             document.getElementById('toggleText').innerHTML = isLogin
@@ -171,7 +208,8 @@
                         setTimeout(() => toggleForm(), 1500);
                     }
                 } else {
-                    msg.textContent = 'Something went wrong. Try again.';
+                    const errorMsg = data.message || Object.values(data).join(', ') || 'Something went wrong.';
+                    msg.textContent = errorMsg;
                     msg.className = 'message error';
                 }
             } catch (e) {

@@ -62,3 +62,27 @@ nav button:hover { background: #6366f1; color: white; }
     z-index: 9999;
     transition: width 0.3s ease;
 }
+
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1a1a2e;
+    border: 1px solid #2d2d44;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 9999;
+    transition: transform 0.3s ease;
+    min-width: 200px;
+    text-align: center;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { border-color: #065f46; color: #6ee7b7; }
+.toast.error { border-color: #7f1d1d; color: #fca5a5; }

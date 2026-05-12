@@ -117,7 +117,7 @@
                 ? document.getElementById('gameStatusManual').value
                 : document.getElementById('gameStatus').value;
 
-            if (!title) return alert('Please enter a game title');
+            if (!title) return showToast('Please enter a game title', 'error');
 
             // 1. First create a game
             const gameRes = await fetchWithAuth(`${API}/api/games`, {
@@ -127,7 +127,7 @@
             
             if(!gameRes.ok) {
                 const error = await gameRes.json();
-                alert("Error: " + Object.values(error).join(", "));
+                showToast("Error: " + Object.values(error).join(", "), 'error');
                 return;
             }
 
@@ -145,7 +145,7 @@
 
             if (!entryRes.ok) {
                 const error = await entryRes.json();
-                alert("Error: " + error.message);
+                showToast("Error: " + error.message, 'error');
                 return;
             }
 
@@ -155,15 +155,25 @@
             document.getElementById('gamePlatform').value = '';
             document.getElementById('gameYear').value = '';
 
+            showToast('Game added!', 'success');
             loadGames();
         }
 
         async function deleteGame(id) {
-            if(!confirm('Are you sure you want to delete this game?')) return;
-            await fetchWithAuth(`${API}/api/entries/${id}`, {
-                method: 'DELETE'
-            });
-            loadGames();
+            
+            const dialog = document.getElementById('confirm-dialog');
+            dialog.style.display = 'flex';
+
+            document.getElementById('confirm-yes').onclick = async () => {
+                dialog.style.display = 'none';
+                await fetchWithAuth(`${API}/api/entries/${id}`, {method: 'DELETE'});
+                showToast('Game deleted!', 'success');
+                loadGames();
+            };
+
+            document.getElementById('confirm-no').onclick = () => {
+                dialog.style.display = 'none';
+            };
         }
 
         let selectedGameId = null;
@@ -225,7 +235,7 @@
             const text = document.getElementById('review-text').value;
 
             if(!rating || !text) {
-                alert('Fill in rating and review text!');
+                showToast('Fill in rating and review text!', 'error');
                 return;
             }
 
@@ -249,7 +259,7 @@
                 loadGames();
             } else {
                 const error = await res.json();
-                alert('Error: ' + Object.values(error).join(', '));
+                showToast('Error: ' + Object.values(error).join(', '), 'error');
             }
         }
 

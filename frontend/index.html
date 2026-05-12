@@ -217,6 +217,12 @@
                 msg.className = 'message error';
             }
         }
+
+        document.addEventListener('keydown', function(e){
+            if (e.key === 'Enter') {
+                handleSubmit();
+            }
+        });
     </script>
 </body>
 </html>

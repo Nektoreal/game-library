@@ -317,3 +317,38 @@ window.addEventListener('scroll', function() {
     const btn = document.getElementById('back-to-top');
     btn.style.display = window.scrollY > 300 ? 'block' : 'none';
 });
+
+function searchLibrary(query) {
+    const filtered = query.length < 1
+        ? allEntries
+        : allEntries.filter(e => e.game.title.toLowerCase().includes(query.toLowerCase()));
+
+    const grid = document.getElementById('gamesGrid');
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty">No games found</div>';
+        return;
+    }
+
+    grid.innerHTML = filtered.map(entry => `<div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
+    ${entry.game.coverUrl ? `
+        <div style="position:relative; height:160px; overflow:hidden;">
+            <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
+            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
+        </div>
+    ` : `
+        <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
+    `}
+    <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
+        <div class="game-title">${entry.game.title}</div>
+        <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+            <span class="status-badge ${entry.status}">${entry.status}</span>
+            <div style="display:flex; align-items:center; gap:8px">
+                ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
+                <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>`).join('');
+}

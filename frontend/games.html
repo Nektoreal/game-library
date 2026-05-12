@@ -70,6 +70,12 @@
             <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
         </div>
         
+        <div style="margin-bottom: 16px;">
+            <input type="text" id="library-search" placeholder="Search in your library..." 
+                oninput="searchLibrary(this.value)"
+                style="width: 300px;"/>
+        </div>
+
         <div class="games-grid" id="gamesGrid">
             <div class="empty">Loading your games...</div>
         </div>

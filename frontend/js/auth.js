@@ -18,3 +18,14 @@ function logout() {
     localStorage.removeItem('token');
     window.location.href = 'index.html';
 }
+
+function startProgress(){
+    const bar = document.getElementById('progress-bar');
+    bar.style.width = '70%';
+}
+
+function finishProgress(){
+    const bar = document.getElementById('progress-bar');
+    bar.style.width = '100%';
+    setTimeout(() => { bar.style.width = '0%';}, 300);
+}

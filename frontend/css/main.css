@@ -51,3 +51,14 @@ nav button:hover { background: #6366f1; color: white; }
 .COMPLETED { background: #065f46; color: #6ee7b7; }
 .DROPPED { background: #7f1d1d; color: #fca5a5; }
 .PLANNED { background: #4b5563; color: #d1d5db; }
+
+#progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: #ffffff;
+    z-index: 9999;
+    transition: width 0.3s ease;
+}

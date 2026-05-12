@@ -1,5 +1,7 @@
 
+
         async function loadProfile() {
+            startProgress();
             const userRes = await fetchWithAuth(`${API}/api/users/me`);
             const user = await userRes.json();
             
@@ -58,5 +60,6 @@
                     <p style="color:#6b7280; font-size:13px;">${r.text}</p>
                 </div>
             `).join('') : '<p style="color:#6b7280; font-size:14px;">No reviews yet</p>';
+            finishProgress();
         }
         loadProfile();

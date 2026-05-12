@@ -10,6 +10,7 @@
         let currentEntries = null;
 //Load Games from database
         async function loadGames() {
+            startProgress();
             const res = await fetchWithAuth(`${API}/api/entries`);
             const entries = await res.json();
             const grid = document.getElementById('gamesGrid');
@@ -60,6 +61,7 @@
                 </div>
             </div>
         `).join('');
+        finishProgress();
         }
 
         function filterGames(status) {

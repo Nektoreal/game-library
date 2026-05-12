@@ -74,6 +74,15 @@
             <input type="text" id="library-search" placeholder="Search in your library..." 
                 oninput="searchLibrary(this.value)"
                 style="width: 300px;"/>
+            <select onchange="sortGames(this.value)" style="width: 150px;">
+                <option value="">Sort by...</option>
+                <option value="title">Name</option>
+                <option value="rating">Rating</option>
+                <option value="status">Status</option>
+            </select>
+            <!--<button class="filter-btn" onclick="sortGames('title')">Name</button>
+            <button class="filter-btn" onclick="sortGames('title')">Rating</button>
+            <button class="filter-btn" onclick="sortGames('title')">Status</button>-->
         </div>
 
         <div class="games-grid" id="gamesGrid">

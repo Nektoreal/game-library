@@ -27,6 +27,7 @@ public class Review {
   private Integer rating;
 
   @NotBlank(message = "Review text cannot be empty")
+  @Column(columnDefinition = "TEXT")
   private String text;
 
   @Column(updatable = false)

@@ -8,7 +8,10 @@
         let selectedRating = 0;
         
         let currentEntries = null;
-//Load Games from database
+
+        let currentUsername = null;
+
+        //Load Games from database
         async function loadGames() {
             startProgress();
             const res = await fetchWithAuth(`${API}/api/entries`);
@@ -20,7 +23,7 @@
                 return;
             }
 
-    // Loading reviews for each game
+        // Loading reviews for each game
             const entriesWithRatings = await Promise.all(entries.map(async entry => {
                 const revRes = await fetchWithAuth(`${API}/api/reviews/game/${entry.game.id}`);
                 const reviews = await revRes.json();
@@ -208,27 +211,7 @@
             selectedGameId = null;
         }
 
-        async function loadReviews(gameId) {
-            const res = await fetchWithAuth(`${API}/api/reviews/game/${gameId}`);
-            const reviews = await res.json();
-            const container = document.getElementById('sidebar-reviews');
 
-            if (reviews.length === 0) {
-                container.innerHTML = '<p style="color: #6b7280; font-size:14px">No reviews yet</p>';
-                return;
-            }
-
-            container.innerHTML = reviews.map(review => `
-            <div style="background:#0f0f1a; border-radius:8px; padding:12px; margin-bottom: 12px; border:1px solid #2d2d44">
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px">
-                    <span style="color:#818cf8; font-size:13px">${review.user.username}</span>
-                    <span style="color:#f59e0b; font-size:13px">⭐ ${review.rating}/10</span>
-                </div>
-                <p style="color:#d1d5db; font-size:13px; margin:0 0 8px 0">${review.text}</p>
-                <span style="color:#4b5563; font-size:11px">${new Date(review.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-            </div>
-            `).join('');
-        }
 
         async function submitReview() {
             const rating = selectedRating;
@@ -323,7 +306,13 @@
             const form = document.getElementById('manual-form');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
-loadGames();
+    fetchWithAuth(`${API}/api/users/me`)
+        .then(r => r.json())
+        .then(user => {
+            currentUsername = user.username;
+            loadGames();
+        });
+
 
 document.addEventListener('click', function(e) {
     const searchResult = document.getElementById('search-result');
@@ -406,3 +395,114 @@ function sortGames(by) {
     </div>
 </div>`).join('');
 }
+
+async function loadReviews(gameId) {
+    const res = await fetchWithAuth(`${API}/api/reviews/game/${gameId}`);
+    const reviews = await res.json();
+    const container = document.getElementById('sidebar-reviews');
+
+    const myReview = reviews.find(r => r.user.username === currentUsername);
+    const otherReviews = reviews.filter(r => r.user.username !== currentUsername);
+
+    let html = '';
+
+    //User Review
+    html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">My Review</h4>`;
+    if (myReview) {
+    html += `<div class="my-review-block">`;
+    html += `
+    <div style="background:#0f0f1a; border-radius:8px; padding:12px; margin-bottom: 16px; border:1px solid #6366f1">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+            <span style="color:#f59e0b; font-size:13px">⭐ ${myReview.rating}/10</span>
+            <div style="display:flex; gap:8px;">
+                <button onclick="editReview('${myReview.id}', ${myReview.rating}, '${myReview.text.replace(/'/g,"\\'")}')" style="background:transparent; border:1px solid #6366f1; color:#818cf8; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:11px">Edit</button>
+                <button onclick="deleteReview('${myReview.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:11px">Delete</button>
+            </div>
+        </div>
+        <p style="color:#d1d5db; font-size:14px; margin:0 0 8px 0; line-height:1.6; white-space:pre-wrap;">${myReview.text}</p>
+        <span style="color:#4b5563; font-size:11px">${new Date(myReview.createdAt).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}</span>
+    </div>`;
+    html += `</div>`;
+} else {
+    html += `
+    <div style="margin-bottom:16px;">
+        <div style="margin-bottom:12px;">
+            <span class="star" data-value="1" onclick="setRating(1)">⭐</span>
+            <span class="star" data-value="2" onclick="setRating(2)">⭐</span>
+            <span class="star" data-value="3" onclick="setRating(3)">⭐</span>
+            <span class="star" data-value="4" onclick="setRating(4)">⭐</span>
+            <span class="star" data-value="5" onclick="setRating(5)">⭐</span>
+            <span class="star" data-value="6" onclick="setRating(6)">⭐</span>
+            <span class="star" data-value="7" onclick="setRating(7)">⭐</span>
+            <span class="star" data-value="8" onclick="setRating(8)">⭐</span>
+            <span class="star" data-value="9" onclick="setRating(9)">⭐</span>
+            <span class="star" data-value="10" onclick="setRating(10)">⭐</span>
+        </div>
+        <textarea id="review-text" placeholder="Write your review..." style="width:100%; height:200px; padding:12px; background:#0f0f1a; border:1px solid #2d2d44; border-radius:8px; color:#fff; resize:none; font-size:14px; margin-bottom:8px;"></textarea>
+        <button id="review-submit-btn" onclick="submitReview()" style="width:100%; padding:10px; background:#6366f1; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;">Save Review</button>
+    </div>`;
+}
+
+    //Reviews from friends
+    if (otherReviews.length > 0){
+        html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">Other Reviews</h4>`;
+        html += otherReviews.map(review => `
+            <div style="background:#0f0f1a; border-radius:8px; padding:12px; margin-bottom:12px; border:1px solid #2d2d44">
+                <div style="display:flex; justify-content:space-beetwen; margin-bottom:8px">
+                    <span style="color:#818cf8; font-size:13px">${review.user.username}</span>
+                    <span style="color:#f59e0b; font-size:13px">⭐ ${review.rating}/10</span>
+                </div>
+                <p style="color:#d1d5db; font-size:13px; margin:0 0 8px 0; white-space:pre-wrap">${review.text}</p>
+            </div>`).join('');
+    }
+
+    container.innerHTML = html;
+}
+
+function editReview(id, rating, text) {
+    const container = document.getElementById('sidebar-reviews');
+    const myReviewBlock = container.querySelector('.my-review-block');
+    
+    myReviewBlock.innerHTML = `
+        <div style="margin-bottom:16px;">
+            <div style="margin-bottom:12px;">
+                <span class="star" data-value="1" onclick="setRating(1)">⭐</span>
+                <span class="star" data-value="2" onclick="setRating(2)">⭐</span>
+                <span class="star" data-value="3" onclick="setRating(3)">⭐</span>
+                <span class="star" data-value="4" onclick="setRating(4)">⭐</span>
+                <span class="star" data-value="5" onclick="setRating(5)">⭐</span>
+                <span class="star" data-value="6" onclick="setRating(6)">⭐</span>
+                <span class="star" data-value="7" onclick="setRating(7)">⭐</span>
+                <span class="star" data-value="8" onclick="setRating(8)">⭐</span>
+                <span class="star" data-value="9" onclick="setRating(9)">⭐</span>
+                <span class="star" data-value="10" onclick="setRating(10)">⭐</span>
+            </div>
+            <textarea id="review-text" style="width:100%; height:160px; padding:12px; background:#0f0f1a; border:1px solid #2d2d44; border-radius:8px; color:#fff; resize:none; font-size:14px; margin-bottom:8px;">${text}</textarea>
+            <div style="display:flex; gap:8px;">
+                <button onclick="saveEditReview('${id}')" style="flex:1; padding:10px; background:#6366f1; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;">Save</button>
+                <button onclick="loadReviews('${selectedGameId}')" style="flex:1; padding:10px; background:transparent; color:#ffffff; border:1px solid #2d2d44; border-radius:8px; cursor:pointer; font-size:14px;">Cancel</button>
+            </div>
+        </div>`;
+    
+    setRating(rating);
+}
+
+async function saveEditReview(id) {
+    const newRating = selectedRating;
+    const newText = document.getElementById('review-text').value;
+
+    await fetchWithAuth(`${API}/api/reviews/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ rating: parseInt(newRating), text: newText })
+    });
+
+    showToast('Review updated!', 'success');
+    loadReviews(selectedGameId);
+    loadGames();
+}
+async function deleteReview(id) {
+        await fetchWithAuth(`${API}/api/reviews/${id}`, { method: 'DELETE'});
+        showToast('Review deleted', 'success');
+        loadReviews(selectedGameId);
+        loadGames();
+    }

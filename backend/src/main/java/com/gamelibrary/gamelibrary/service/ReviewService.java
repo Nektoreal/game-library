@@ -43,4 +43,15 @@ public class ReviewService {
   public List<Review> getReviewByUsername(String username) {
     return reviewRepository.findByUserUsername(username);
   }
+
+  public Review updateReview(String id, Review updatedReview){
+    Review review = reviewRepository.findById(id).orElseThrow();
+    review.setRating(updatedReview.getRating());
+    review.setText(updatedReview.getText());
+    return reviewRepository.save(review);
+  }
+
+  public void deleteReview(String id) {
+    reviewRepository.deleteById(id);
+  }
 }

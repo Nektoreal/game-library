@@ -14,9 +14,22 @@
         //Load Games from database
         async function loadGames() {
             startProgress();
+
+            //show skeleton
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = Array(6).fill(`
+                <div class="skeleton">
+                    <div class="skeleton-img"></div>
+                    <div style="padding:16px;">
+                        <div class="skeleton-line" style="width:70%;"></div>
+                        <div class="skeleton-line" style="width:50%;"></div>
+                        <div class="skeleton-line" style="width:30%;"></div>
+                    </div>
+                </div>
+                `).join('');
+
             const res = await fetchWithAuth(`${API}/api/entries`);
             const entries = await res.json();
-            const grid = document.getElementById('gamesGrid');
 
             if (entries.length === 0) {
                 grid.innerHTML = '<div class="empty">No games yet. Add your first game!</div>';
@@ -407,7 +420,7 @@ async function loadReviews(gameId) {
     let html = '';
 
     //User Review
-    html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">My Review</h4>`;
+    //html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">My Review</h4>`;
     if (myReview) {
     html += `<div class="my-review-block">`;
     html += `

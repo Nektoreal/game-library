@@ -44,7 +44,7 @@
                         <option value="DROPPED">Dropped</option>
                     </select>
                     <button class="add-btn" onclick="addGame()">Add</button>
-                    <button class="add-btn" onclick="showManualForm()">Add manually</button>
+                    <button class="add-btn" onclick="showManualForm()">Manually</button>
                 </div>
 
                 <!--Hide form for manually-->
@@ -63,6 +63,7 @@
                     </div>
                 </div>
             </div>
+        <!--
         <div style="display: flex; gap: 8px; margin-bottom: 20px;">
             <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')" >All</button>
             <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
@@ -70,11 +71,33 @@
             <button id="filter-DROPPED" class="filter-btn" onclick="filterGames('DROPPED')">Dropped</button>
             <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
         </div>
+        -->
+
         
-        <div style="margin-bottom: 16px;">
+            <!-- Desktop фильтры -->
+            <div class="filter-buttons-desktop" style="gap: 8px; margin-bottom: 20px;">
+                <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')">All</button>
+                <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
+                <button id="filter-PLAYING" class="filter-btn" onclick="filterGames('PLAYING')">Playing</button>
+                <button id="filter-DROPPED" class="filter-btn" onclick="filterGames('DROPPED')">Dropped</button>
+                <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
+            </div>
+
+            <!-- Mobile фильтры -->
+            <div class="filter-buttons-mobile" style="margin: 20px 0 20px;">
+                <select onchange="filterGames(this.value)" style="width:100%;">
+                    <option value="ALL">All</option>
+                    <option value="PLANNED">Planned</option>
+                    <option value="PLAYING">Playing</option>
+                    <option value="DROPPED">Dropped</option>
+                    <option value="COMPLETED">Completed</option>
+                </select>
+            </div> 
+        
+         <div style="margin-top: 32px; margin-bottom: 16px;">
             <input type="text" id="library-search" placeholder="Search in your library..." 
                 oninput="searchLibrary(this.value)"
-                style="width: 300px;"/>
+                style="width: 300px; margin-bottom: 8px;"/>
             <select onchange="sortGames(this.value)" style="width: 150px;">
                 <option value="">Sort by...</option>
                 <option value="title">Name</option>
@@ -84,6 +107,7 @@
             <!--<button class="filter-btn" onclick="sortGames('title')">Name</button>
             <button class="filter-btn" onclick="sortGames('title')">Rating</button>
             <button class="filter-btn" onclick="sortGames('title')">Status</button>-->
+
         </div>
 
         <div class="games-grid" id="gamesGrid">

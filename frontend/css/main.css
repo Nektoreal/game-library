@@ -115,3 +115,95 @@ nav button:hover { background: #6366f1; color: white; }
     0% {background-position: 200% 0;}
     100% { background-position: -200% 0;}
 }
+
+@media (max-width: 600px) {
+    .container {
+        padding: 0 12px;
+    }
+
+    nav {
+        padding: 12px 16px;
+    }
+
+    nav h1 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .add-game {
+        padding: 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        width: 100% !important;
+    }
+
+    .container {
+        padding: 0 8px;
+        margin: 16px auto;
+    }
+
+    nav {
+        padding: 12px 16px;
+    }
+
+    nav h1 {
+        font-size: 16px;
+    }
+
+    input, select {
+        min-width: unset;
+    }
+
+    #library-search {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-buttons-desktop {
+        display: none;
+    }
+    
+    .filter-buttons-mobile {
+        display: block;
+    }
+}
+
+@media (min-width: 601px) {
+    .filter-buttons-mobile {
+        display: none;
+    }
+}
+
+.filter-buttons-desktop {
+    display: flex;
+    gap: 800px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .filter-buttons-desktop {
+        display: none;
+    }
+    
+    .filter-buttons-mobile {
+        display: block;
+    }
+}
+
+@media (min-width: 601px) {
+    .filter-buttons-mobile {
+        display: none;
+    }
+}

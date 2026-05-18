@@ -66,7 +66,8 @@
             `}
             <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
                 <div class="game-title">${entry.game.title}</div>
-                <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
+                <div class="game-meta">${entry.game.genre} / ${entry.game.platform} / ${entry.game.releaseYear}</div>
+                <div>Released: ${entry.game.releaseYear}</div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
                 <span class="status-badge ${entry.status}">${entry.status}</span>
                 <div style="display:flex; align-items:center; gap:8px">
@@ -216,12 +217,16 @@
             document.getElementById('sidebar').style.transform = 'translateX(0)';
             document.getElementById('overlay').style.display = 'block'; 
             document.getElementById('status-select').value = entry.status;
+
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar(){
             document.getElementById('sidebar').style.transform = 'translateX(100%)';
             document.getElementById('overlay').style.display = 'none';
             selectedGameId = null;
+
+            document.body.style.overflow = '';
         }
 
 

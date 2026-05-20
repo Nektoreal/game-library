@@ -5,7 +5,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Library</title>
-    <style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    
+    <nav>
+        <a class="nav-logo" href="#">game<span>.</span>Library</a>
+    </nav>
+
+    <div class="auth-layout">
+        <div class="auth-left">
+            <div class="left-grid"></div>
+            <div class="left-inner">
+                <div class="left-eyebrow">Your game archive</div>
+                <div class="left-headline">Track everything<br>you've ever <em>played.</em></div>
+                <div class="left-desc">Log your collection, rate what you finish, share your profile with viewers. Simple as that.</div>
+                <div class="clock-wrap">
+                    <div id="clock"></div>
+                    <div id="date"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-right">
+            <div class="form-wrap">
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login">Log in</button>
+                    <button class="auth-tab" id="tab-register">Register</button>
+                </div>
+
+                <!-- LOGIN -->
+                <div class="auth-form visible" id="form-login">
+                    <div class="form-title">Welcome back.</div>
+                    <div class="form-sub">Log in to access your collection.</div>
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="field-label">Username</div>
+                            <input class="field-input" type="text" id="username" placeholder="nightxcraft" autocomplete="username">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">Password</div>
+                            <input class="field-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+                        </div>
+                    </div>
+                    <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">Log in →</button>
+                    <div class="message" id="message"></div>
+                    <div class="form-hint">No account yet? <a id="go-register">Create one — it's free.</a></div>
+                </div>
+
+                <!-- REGISTER -->
+                 <div class="auth-form" id="form-register">
+                    <div class="form-title">Create account.</div>
+                    <div class="form-sub">Your archive starts here.</div>
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="field-label">Username</div>
+                            <input class="field-input" type="text" id="reg-username" placeholder="nightxcraft" autocomplete="username">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">Email</div>
+                            <input class="field-input" type="email" id="email" placeholder="you@example.com" autocomplete="email">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">Password</div>
+                            <input class="field-input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div class="strength-bar">
+                        <div class="strength-seg" id="seg1"></div>
+                        <div class="strength-seg" id="seg2"></div>
+                        <div class="strength-seg" id="seg3"></div>
+                    </div>
+                    <div class="strength-label" id="strength-label"></div>
+                    <button class="btn-submit" onclick="handleRegister()">Create account →</button>
+                    <div class="message" id="message-reg"></div>
+                    <div class="form-hint">Already have an account? <a id="go-login">Log in.</a></div>
+                 </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/index.js"></script>
+</body>
+</html>
+
+    <!--
+        <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -226,3 +317,4 @@
     </script>
 </body>
 </html>
+-->

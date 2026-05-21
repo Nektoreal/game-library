@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +48,7 @@
                     <button class="add-btn" onclick="showManualForm()">Manually</button>
                 </div>
 
-                <!--Hide form for manually-->
+                <--Hide form for manually->
                 <div id="manual-form" style="display: none; margin-top: 16px;">
                     <div class="form-row">
                         <input type="text" id="gameGenre" placeholder="Genre" />
@@ -59,11 +60,11 @@
                             <option value="COMPLETED">Completed</option>
                             <option value="DROPPED">Dropped</option>
                         </select>
-                        <!--<button class="add-btn" onclick="addGame()">Add</button>-->
+                        <--<button class="add-btn" onclick="addGame()">Add</button>->
                     </div>
                 </div>
             </div>
-        <!--
+        <--
         <div style="display: flex; gap: 8px; margin-bottom: 20px;">
             <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')" >All</button>
             <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
@@ -71,10 +72,10 @@
             <button id="filter-DROPPED" class="filter-btn" onclick="filterGames('DROPPED')">Dropped</button>
             <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
         </div>
-        -->
+        ->
 
         
-            <!-- Desktop фильтры -->
+            <-- Desktop фильтры ->
             <div class="filter-buttons-desktop" style="gap: 8px; margin-bottom: 20px;">
                 <button id="filter-ALL" class="filter-btn" onclick="filterGames('ALL')">All</button>
                 <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
@@ -83,7 +84,7 @@
                 <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
             </div>
 
-            <!-- Mobile фильтры -->
+            <-- Mobile фильтры ->
             <div class="filter-buttons-mobile" style="margin: 20px 0 20px;">
                 <select onchange="filterGames(this.value)" style="width:100%;">
                     <option value="ALL">All</option>
@@ -104,9 +105,9 @@
                 <option value="rating">Rating</option>
                 <option value="status">Status</option>
             </select>
-            <!--<button class="filter-btn" onclick="sortGames('title')">Name</button>
+            <--<button class="filter-btn" onclick="sortGames('title')">Name</button>
             <button class="filter-btn" onclick="sortGames('title')">Rating</button>
-            <button class="filter-btn" onclick="sortGames('title')">Status</button>-->
+            <button class="filter-btn" onclick="sortGames('title')">Status</button>->
 
         </div>
 
@@ -148,7 +149,7 @@
         <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
     </div>
 
-    <!-- остальное содержимое сайдбара -->
+    <-- остальное содержимое сайдбара ->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h2 id="sidebar-title" style="color: #818cf8; font-size: 30px;"></h2>
         <button onclick="closeSidebar()" style="background: transparent; border: none; color: #6b7280; font-size: 20px; cursor: pointer">✕</button>
@@ -173,10 +174,10 @@
         <option value="DROPPED">Dropped</option>
     </select>
 
-    <!-- <hr style="border-color: #2d2d44; margin-bottom: 24px;">
+    <-- <hr style="border-color: #2d2d44; margin-bottom: 24px;">
 
     <h3 style="color: #ffffff; font-size: 15px; margin-bottom: 16px;">Reviews</h3>
-    <div id="sidebar-reviews"></div> -->
+    <div id="sidebar-reviews"></div> ->
 
     <hr style="border-color: #2d2d44; margin-bottom: 24px;">
 
@@ -229,5 +230,161 @@
             </div>
         </div>
     </div>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>game.Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/games.css">
+</head>
+<body>
+
+    <div id="progress-bar"></div>
+
+    <nav>
+        <a class="nav-logo" href="#">game<span>.</span>library</a>
+        <div class="nav-links">
+            <a href="games.html" class="active">Library</a>
+        </div>
+        <div class="nav-right">
+            <button onclick="window.location.href='profile.html'">Profile</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- ADD GAME -->
+         <div class="add-game">
+            <div class="add-game-title">Add game</div>
+            <div class="add-row">
+                <div style="position: relative; flex: 1; min-width: 0;">
+                    <input type="text" id="gameTitle" class="add-input" placeholder="Search title or paste link…"
+                    oninput="searchGames(this.value)" onclick="searchGames(this.value)">
+                    <div id="search-result" class="search-dropdown"></div>
+                </div>
+                <select class="add-select" id="gameStatus">
+                    <option value="PLANNED">Planned</option>
+                    <option value="PLAYING">Playing</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="DROPPED">Dropped</option>
+                </select>
+                <button class="btn-add" onclick="addGame()">Add</button>
+                <button class="btn-manual" onclick="showManualForm()">Manual</button>
+            </div>
+
+            <!-- Manual form -->
+             <div id="manual-form" style="display: none; margin-top: 1px;">
+                <div class="add-row">
+                    <input type="text" id="gameGenre" class="add-input" placeholder="Genre">
+                    <input type="text" id="gamePlatform" class="add-input" placeholder="Platform">
+                    <input type="number" id="gameYear" class="add-input" placeholder="Year">
+                    <select id="gameStatusManual" class="add-select">
+                        <option value="PLANNED">Planned</option>
+                        <option value="PLAYING">Playing</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="DROPPED">Dropped</option>
+                    </select>
+                </div>
+             </div>
+         </div>
+
+         <!-- TOOLBAR -->
+          <div class="toolbar">
+            <div class="toolbar-left">
+                <input type="text" id="library-search" class="library-search" placeholder="Search in library…"
+                oninput="searchLibrary(this.value)">
+            </div>
+            <div class="toolbar-right">
+                <select class="sort-select" onchange="sortGames(this.value)">
+                    <option value="">Sort by…</option>
+                    <option value="title">Name</option>
+                    <option value="rating">Rating</option>
+                    <option value="status">Status</option>
+                </select>
+            </div>
+          </div>
+
+          <!-- FILTERS desktop -->
+           <div class="filter-buttons-desktop filter-now">
+            <button id="filter-ALL" class="filter-btn active" onclick="filterGames('ALL')">All</button>
+            <button id="filter-PLANNED" class="filter-btn" onclick="filterGames('PLANNED')">Planned</button>
+            <button id="filter-PLAYING" class="filter-btn" onclick="filterGames('PLAYING')">Playing</button>
+            <button id="filter-DROPPED" class="filter-btn" onclick="filterGames('DROPPED')">Dropped</button>
+            <button id="filter-COMPLETED" class="filter-btn" onclick="filterGames('COMPLETED')">Completed</button>
+           </div>
+
+           <!-- FILTERS mobile -->
+           <div class="filter-buttons-mobile" style="margin: 16px 0;">
+            <select class="add-select" style="width: 100%;" onchange="filterGames(this.value)">
+                <option value="ALL">All</option>
+                <option value="PLANNED">Planned</option>
+                <option value="PLAYING">Playing</option>
+                <option value="DROPPED">Dropped</option>
+                <option value="COMPLETED">Completed</option>
+            </select>
+           </div>
+
+           <!-- GRID -->
+            <div class="games-grid" id="gamesGrid">
+                <div class="empty">Loading your games…</div>
+            </div>
+    </div>
+
+    <!-- OVERLAY -->
+     <div id="overlay" onclick="closeSidebar()" style="display: none; position: fixed; inset: 0;
+     background: rgba(0, 0, 0, 0.5); z-index: 99;"></div>
+
+     <!-- SIDEBAR -->
+      <div id="sidebar" class="sidebar">
+        <div id="sidebar-banner" class="sidebar-banner">
+            <div class="sidebar-banner-fade"></div>
+        </div>
+
+        <div class="sidebar-header">
+            <h2 id="sidebar-title" class="sidebar-title"></h2>
+            <button onclick="closeSidebar()" class="sidebar-close">✕</button>
+        </div>
+
+        <div id="sidebar-meta" class="sidebar-meta"></div>
+        <div id="sidebar-status"></div>
+
+        <select id="status-select" onchange="updateStatus(this.value)" class="status-select">
+            <option value="PLANNED">Planned</option>
+            <option value="PLAYING">Playing</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="DROPPED">Dropped</option>
+        </select>
+
+        <hr class="sidebar-divider">
+        <h3 class="sidebar-section-title">Review</h3>
+        <div id="sidebar-reviews"></div>
+      </div>
+
+      <!-- BACK TO TOP -->
+        <button id="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+
+      <!-- CONFIRM DIALOG -->
+        <div id="confirm-dialog">
+            <div class="confirm-box">
+                <p>Are you sure you want to delete this game?</p>
+                <div class="confirm-actions">
+                    <button class="btn-confirm-yes" id="confirm-yes">Delete</button>
+                    <button class="btn-confirm-no" id="confirm-no">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="./js/auth.js"></script>
+        <script src="./js/games.js"></script>
 </body>
 </html>

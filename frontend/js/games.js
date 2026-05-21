@@ -1,9 +1,35 @@
-        //Close sidebar with "ESC" - key
+//Close sidebar with "ESC" - key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
             closeSidebar();
             }
         });
+
+        function renderCard(entry) {
+            const entryJson = JSON.stringify(entry).replace(/"/g, '&quot;');
+            return `<div class="game-card" onclick="openSidebar(${entryJson})">
+                ${entry.game.coverUrl ? `
+                <div class="game-cover">
+                    <img src="${entry.game.coverUrl}" alt="${entry.game.title}">
+                </div>` : `
+                <div class="game-cover">
+                    <div class="game-cover-placeholder">
+                        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;">NO COVER</span>
+                    </div>
+                </div>`}
+                <div class="game-info">
+                    <div class="game-title">${entry.game.title}</div>
+                    <div class="game-meta">${entry.game.genre} · ${entry.game.platform} · ${entry.game.releaseYear}</div>
+                    <div class="game-footer">
+                        <span class="status-badge ${entry.status}">${entry.status}</span>
+                        <div class="game-score-row">
+                            ${entry.avgRating ? `<span class="score-val">${entry.avgRating}/10</span>` : ''}
+                            <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" class="btn-delete">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
 
         let selectedRating = 0;
         
@@ -54,30 +80,7 @@
             document.getElementById('filter-DROPPED').textContent = `Dropped (${entriesWithRatings.filter(e => e.status ==='DROPPED').length})`;
             document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status ==='COMPLETED').length})`;
             //game card
-            grid.innerHTML = entriesWithRatings.map(entry => `
-            <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
-            ${entry.game.coverUrl ? `
-        <div style="position:relative; height:160px; overflow:hidden;">
-             <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
-            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
-                </div>
-                 ` : `
-                 <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
-            `}
-            <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
-                <div class="game-title">${entry.game.title}</div>
-                <div class="game-meta">${entry.game.genre} / ${entry.game.platform} / ${entry.game.releaseYear}</div>
-                <div>Released: ${entry.game.releaseYear}</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
-                <span class="status-badge ${entry.status}">${entry.status}</span>
-                <div style="display:flex; align-items:center; gap:8px">
-                    ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
-                    <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+            grid.innerHTML = entriesWithRatings.map(entry => renderCard(entry)).join('');
         finishProgress();
         }
 
@@ -98,29 +101,7 @@
             document.getElementById(`filter-${status}`).classList.add('active');
 
 
-            grid.innerHTML = filtered.map(entry => `
-            <div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
-            ${entry.game.coverUrl ? `
-            <div style="position:relative; height:160px; overflow:hidden;">
-            <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
-            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
-                </div>
-                ` : `
-                <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center;             justify-content:center; color:#6b7280;">No cover</div>
-            `}
-            <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
-                <div class="game-title">${entry.game.title}</div>
-                <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
-                <span class="status-badge ${entry.status}">${entry.status}</span>
-                <div style="display:flex; align-items:center; gap:8px">
-                    ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
-                    <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `).join('');
+            grid.innerHTML = filtered.map(entry => renderCard(entry)).join('');
         }
 
         async function addGame() {
@@ -276,16 +257,9 @@
 
         function setRating(rating){
             selectedRating = rating;
-            const allStars = document.querySelectorAll('.star');
-            allStars.forEach(star => 
-                {
-                    if (star.dataset.value <= rating){
-                        star.style.opacity = '1';
-                    } else {
-                        star.style.opacity = '0.3';
-                    }
-                }
-            )
+            document.querySelectorAll('.review-star').forEach(star => {
+                star.classList.toggle('active', parseInt(star.dataset.value) <= rating);
+            });
         }
         const RAWG_KEY = '7f894402cc6d4e9d82c7aa85dda167a0';
 
@@ -360,27 +334,7 @@ function searchLibrary(query) {
         return;
     }
 
-    grid.innerHTML = filtered.map(entry => `<div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
-    ${entry.game.coverUrl ? `
-        <div style="position:relative; height:160px; overflow:hidden;">
-            <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
-            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
-        </div>
-    ` : `
-        <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
-    `}
-    <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
-        <div class="game-title">${entry.game.title}</div>
-        <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
-            <span class="status-badge ${entry.status}">${entry.status}</span>
-            <div style="display:flex; align-items:center; gap:8px">
-                ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
-                <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>`).join('');
+    grid.innerHTML = filtered.map(entry => renderCard(entry)).join('');
 }
 
 function sortGames(by) {
@@ -391,27 +345,7 @@ function sortGames(by) {
     });
 
     const grid = document.getElementById('gamesGrid');
-    grid.innerHTML = sorted.map(entry => `<div class="game-card" onclick="openSidebar(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="cursor:pointer; overflow:hidden; padding:0; ${entry.game.coverUrl ? `background-image: url('${entry.game.coverUrl}'); background-size: cover; background-position: center;` : ''}">
-    ${entry.game.coverUrl ? `
-        <div style="position:relative; height:160px; overflow:hidden;">
-            <img src="${entry.game.coverUrl}" style="width:100%; height:100%; object-fit:cover;" />
-            <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background: linear-gradient(to bottom, transparent, #1a1a2e);"></div>
-        </div>
-    ` : `
-        <div style="width:100%; height:160px; background:#2d2d44; display:flex; align-items:center; justify-content:center; color:#6b7280;">No cover</div>
-    `}
-    <div style="padding:16px; background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(2px);">
-        <div class="game-title">${entry.game.title}</div>
-        <div class="game-meta">${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}</div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
-            <span class="status-badge ${entry.status}">${entry.status}</span>
-            <div style="display:flex; align-items:center; gap:8px">
-                ${entry.avgRating ? `<span style="color:#f59e0b; font-size:13px">⭐ ${entry.avgRating}</span>` : ''}
-                <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:12px">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>`).join('');
+    grid.innerHTML = sorted.map(entry => renderCard(entry)).join('');
 }
 
 async function loadReviews(gameId) {
@@ -427,50 +361,39 @@ async function loadReviews(gameId) {
     //User Review
     //html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">My Review</h4>`;
     if (myReview) {
-    html += `<div class="my-review-block">`;
-    html += `
-    <div style="background:#0f0f1a; border-radius:8px; padding:12px; margin-bottom: 16px; border:1px solid #6366f1">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px">
-            <span style="color:#f59e0b; font-size:13px">⭐ ${myReview.rating}/10</span>
-            <div style="display:flex; gap:8px;">
-                <button onclick="editReview('${myReview.id}', ${myReview.rating}, '${myReview.text.replace(/'/g,"\\'")}')" style="background:transparent; border:1px solid #6366f1; color:#818cf8; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:11px">Edit</button>
-                <button onclick="deleteReview('${myReview.id}')" style="background:transparent; border:1px solid #7f1d1d; color:#fca5a5; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:11px">Delete</button>
+    html += `<div class="my-review-block">
+    <div class="review-existing">
+        <div class="review-existing-header">
+            <span class="review-score-display">${myReview.rating}<span class="review-score-max">/10</span></span>
+            <div style="display:flex; gap:1px;">
+                <button onclick="editReview('${myReview.id}', ${myReview.rating}, '${myReview.text.replace(/'/g,"\\'").replace(/\r?\n/g, "\\n")}')" class="btn-review-action">Edit</button>
+                <button onclick="deleteReview('${myReview.id}')" class="btn-review-delete">Delete</button>
             </div>
         </div>
-        <p style="color:#d1d5db; font-size:14px; margin:0 0 8px 0; line-height:1.6; white-space:pre-wrap;">${myReview.text}</p>
-        <span style="color:#4b5563; font-size:11px">${new Date(myReview.createdAt).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}</span>
+        <p class="review-text-display">${myReview.text}</p>
+        <span class="review-date">${new Date(myReview.createdAt).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}</span>
+    </div>
     </div>`;
-    html += `</div>`;
 } else {
     html += `
-    <div style="margin-bottom:16px;">
-        <div style="margin-bottom:12px;">
-            <span class="star" data-value="1" onclick="setRating(1)">⭐</span>
-            <span class="star" data-value="2" onclick="setRating(2)">⭐</span>
-            <span class="star" data-value="3" onclick="setRating(3)">⭐</span>
-            <span class="star" data-value="4" onclick="setRating(4)">⭐</span>
-            <span class="star" data-value="5" onclick="setRating(5)">⭐</span>
-            <span class="star" data-value="6" onclick="setRating(6)">⭐</span>
-            <span class="star" data-value="7" onclick="setRating(7)">⭐</span>
-            <span class="star" data-value="8" onclick="setRating(8)">⭐</span>
-            <span class="star" data-value="9" onclick="setRating(9)">⭐</span>
-            <span class="star" data-value="10" onclick="setRating(10)">⭐</span>
+    <div class="review-form">
+        <div class="review-stars">
+            ${[1,2,3,4,5,6,7,8,9,10].map(n => `<span class="review-star" data-value="${n}" onclick="setRating(${n})">${n}</span>`).join('')}
         </div>
-        <textarea id="review-text" placeholder="Write your review..." style="width:100%; height:200px; padding:12px; background:#0f0f1a; border:1px solid #2d2d44; border-radius:8px; color:#fff; resize:none; font-size:14px; margin-bottom:8px;"></textarea>
-        <button id="review-submit-btn" onclick="submitReview()" style="width:100%; padding:10px; background:#6366f1; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;">Save Review</button>
+        <textarea id="review-text" class="review-textarea" placeholder="Write your review…"></textarea>
+        <button onclick="submitReview()" class="btn-save-review">Save Review</button>
     </div>`;
 }
 
-    //Reviews from friends
     if (otherReviews.length > 0){
-        html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">Other Reviews</h4>`;
+        html += `<div class="sidebar-section-title" style="margin-top:20px;">Other Reviews</div>`;
         html += otherReviews.map(review => `
-            <div style="background:#0f0f1a; border-radius:8px; padding:12px; margin-bottom:12px; border:1px solid #2d2d44">
-                <div style="display:flex; justify-content:space-beetwen; margin-bottom:8px">
-                    <span style="color:#818cf8; font-size:13px">${review.user.username}</span>
-                    <span style="color:#f59e0b; font-size:13px">⭐ ${review.rating}/10</span>
+            <div class="review-other">
+                <div class="review-other-header">
+                    <span class="review-other-user">${review.user.username}</span>
+                    <span class="review-score-display" style="font-size:14px;">${review.rating}<span class="review-score-max">/10</span></span>
                 </div>
-                <p style="color:#d1d5db; font-size:13px; margin:0 0 8px 0; white-space:pre-wrap">${review.text}</p>
+                <p class="review-text-display">${review.text}</p>
             </div>`).join('');
     }
 
@@ -482,23 +405,14 @@ function editReview(id, rating, text) {
     const myReviewBlock = container.querySelector('.my-review-block');
     
     myReviewBlock.innerHTML = `
-        <div style="margin-bottom:16px;">
-            <div style="margin-bottom:12px;">
-                <span class="star" data-value="1" onclick="setRating(1)">⭐</span>
-                <span class="star" data-value="2" onclick="setRating(2)">⭐</span>
-                <span class="star" data-value="3" onclick="setRating(3)">⭐</span>
-                <span class="star" data-value="4" onclick="setRating(4)">⭐</span>
-                <span class="star" data-value="5" onclick="setRating(5)">⭐</span>
-                <span class="star" data-value="6" onclick="setRating(6)">⭐</span>
-                <span class="star" data-value="7" onclick="setRating(7)">⭐</span>
-                <span class="star" data-value="8" onclick="setRating(8)">⭐</span>
-                <span class="star" data-value="9" onclick="setRating(9)">⭐</span>
-                <span class="star" data-value="10" onclick="setRating(10)">⭐</span>
+        <div class="review-form">
+            <div class="review-stars">
+                ${[1,2,3,4,5,6,7,8,9,10].map(n => `<span class="review-star" data-value="${n}" onclick="setRating(${n})">${n}</span>`).join('')}
             </div>
-            <textarea id="review-text" style="width:100%; height:160px; padding:12px; background:#0f0f1a; border:1px solid #2d2d44; border-radius:8px; color:#fff; resize:none; font-size:14px; margin-bottom:8px;">${text}</textarea>
-            <div style="display:flex; gap:8px;">
-                <button onclick="saveEditReview('${id}')" style="flex:1; padding:10px; background:#6366f1; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;">Save</button>
-                <button onclick="loadReviews('${selectedGameId}')" style="flex:1; padding:10px; background:transparent; color:#ffffff; border:1px solid #2d2d44; border-radius:8px; cursor:pointer; font-size:14px;">Cancel</button>
+            <textarea id="review-text" class="review-textarea review-textarea-edit">${text.replace(/\\n/g, '\n')}</textarea>
+            <div style="display:flex; gap:1px;">
+                <button onclick="saveEditReview('${id}')" class="btn-save-review" style="flex:1;">Save</button>
+                <button onclick="loadReviews('${selectedGameId}')" class="btn-review-action" style="flex:1; padding:14px;">Cancel</button>
             </div>
         </div>`;
     

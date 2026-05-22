@@ -1,0 +1,136 @@
+/* PROFILE HEADER */
+.profile-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 40px; align-items: end;
+    padding: 48px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-avatar-wrap { position: relative;}
+.profile-avatar {
+    width: 88px; height: 88px;
+    background: var(--surface2);
+    border: 1px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 28px; font-weight: 400;
+    color: var(--accent);
+    position: relative;
+}
+.profile-avatar::before{
+    content: '';
+    position: absolute; top: 5px; left: 5px; right: -5px; bottom: -5px;
+    border: 1px solid var(--border); z-index: -1;
+}
+
+.profile-handle {
+    font-family: var(--font-mono); font-size: 28px; font-weight: 400;
+    color: var(--text); letter-spacing: -0.02em; margin-bottom: 6px;
+}
+.profile-email {
+    font-size: 12px; color: var(--text-muted);
+    letter-spacing: 0.05em; margin-bottom: 24px;
+}
+
+.profile-stats { display: flex; gap: 16px;}
+.pstat {padding: 0 24px; border-right: 1px solid var(--border);}
+.pstat:first-child {padding-left: 0;}
+.pstat:last-child {border-right: none;}
+.pstat-n {
+    font-family: var(--font-mono); font-size: 20px; font-weight: 400;
+    color: var(--text); line-height: 1;
+}
+.pstat-l {
+    font-size: 10px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px;
+}
+
+/* STATS ROW */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 32px;
+}
+.stat-block {
+    background: var(--surface); padding: 24px 20px;
+}
+.stat-block-n {
+    font-family: var(--font-mono); font-size: 26px; font-weight: 400;
+    color: var(--accent); line-height: 1; margin-bottom: 6px;
+}
+.stat-block-l {
+    font-size: 10px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* GENRE LIST */
+.genre-list { display: flex; flex-direction: column; gap: 10px;}
+.genre-row {display: flex; align-items: center; gap: 12px;}
+.genre-name {
+    font-size: 11px; color: var(--text-sub);
+    min-width: 100px; letter-spacing: 0.04em;
+}
+.genre-bar-bg { flex: 1; height: 1px; background: var(--border-strong);}
+.genre-bar-fill { height: 1px; background: var(--accent);}
+.genre-count {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--text-muted); min-width: 50px; text-align: right;
+}
+
+/* SECTION */
+.section {margin-top: 40px;}
+.section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border);
+    margin-bottom: 1px;
+}
+.section-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted); font-family: var(--font-mono);
+}
+
+/* REVIEWS LIST */
+.reviews-list {display: flex; flex-direction: column;}
+.review-item {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+}
+.review-title{
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--text); margin-bottom: 4px;
+}
+.review-text {
+    font-size: 12px; color: var(--text-sub); line-height: 1.5;
+}
+.review-score {
+    font-family: var(--font-mono); font-size: 18px; font-weight: 400;
+    color: var(--accent); white-space: nowrap;
+}
+.no-reviews {
+    padding: 40px 20px; font-size: 12px;
+    color: var(--text-muted); font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border); border-top: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr);}
+    .stats-row .stat-block:last-child {grid-column: span 2;}
+}
+@media (max-width: 600px) {
+    .profile-header {grid-template-columns: 1fr; gap: 20px;}
+    .profile-stats { flex-wrap: wrap; gap: 16px ;}
+    .pstat {padding: 0 16px; border-right: none;}
+    .stats-row {grid-template-columns: 1fr 1fr;}
+    .stats-row .stat-block:last-child {grid-column: span 2;}
+}

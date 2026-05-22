@@ -4,85 +4,85 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>game.Library — Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/profile.css">
 </head>
 
 <body>
     <div id="progress-bar"></div>
     <nav>
-
-        <h1>Game Library</h1>
-
-        <div>
-            <button onclick="window.location.href = 'games.html'">Games</button>
+        <a class="nav-logo" href="#">game<span>.</span>Library</a>
+        <div class="nav-links">
+            <a href="games.html">Library</a>
+            <a href="profile.html" class="active">Profile</a>
+        </div>
+        <div class="nav-right">
+            <button onclick="window.location.href='games.html'">Library</button>
             <button onclick="logout()">Logout</button>
         </div>
-        
     </nav>
     
-
     <div class="container">
-        <div id="profile-avatar" style="width: 100px; height: 100px; border-radius: 25%; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-wrap: wrap;">
-          P
-        </div>
-
-        <div id="profile-username" style="font-size: 24px; font-weight: 600; margin-top: 16px;">username</div>
-        <div id="profile-email" style="font-size: 14px; color: #6b7280; margin-top: 4px;">email</div>
-
-        <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
-
-            <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44;     text-align: center; min-width: 120px;">
-                <div id="count-total" style="font-size: 32px; font-weight: 600; color: #818cf8;">0</div>
-                <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Total</div>
+        <!-- PROFILE HEADEAR -->
+         <div class="profile-header">
+            <div class="profile-avatar-wrap">
+                <div id="profile-avatar" class="profile-avatar">P</div>
             </div>
-
-          <!--Playing-->
-          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center;min-width: 120px;">
-            <div id="count-playing" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
-            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Playing</div>
-          </div>
-          <!--Dropped-->
-          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center;min-width: 120px;">
-            <div id="count-dropped" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
-            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Dropped</div>
-          </div>
-          <!--Planned-->
-          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center;min-width: 120px;">
-            <div id="count-planned" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
-            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Planned</div>
-          </div>
-          <!--Completed-->
-          <div style="background: #1a1a2e; padding: 20px; border-radius: 12px; border: 1px solid #2d2d44; text-align: center; min-width: 120px;">
-            <div id="count-completed" style="font-size: 32px; font-weight: 600; color: #93c5fd;">0</div>
-            <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Completed</div>
-          </div>
-          
-        </div>
-
-        <!-- Средняя оценка и дата регистрации -->
-        <div style="display:flex; gap:16px; margin-top:24px; flex-wrap: wrap;">
-            <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; text-align:center; min-width:120px;">
-                <div id="avg-rating" style="font-size:32px; font-weight:600; color:#f59e0b;">—</div>
-                <div style="font-size:13px; color:#6b7280; margin-top:4px;">Avg Rating</div>
+            <div class="profile-info">
+                <div class="profile-handle" id="profile-username">username</div>
+                <div class="profile-email" id="profile-email">email</div>
+                <div class="profile-stats">
+                    <div class="pstat">
+                        <div class="pstat-n" id="count-total">0</div>
+                        <div class="pstat-l">Total</div>
+                    </div>
+                    <div class="pstat">
+                        <div class="pstat-n" id="count-completed">0</div>
+                        <div class="pstat-l">Completed</div>
+                    </div>
+                    <div>
+                        <div class="pstat-n" id="count-playing">0</div>
+                        <div class="pstat-l">Playing</div>
+                    </div>
+                    <div>
+                        <div class="pstat-n" id="count-planned">0</div>
+                        <div class="pstat-l">Planned</div>
+                    </div>
+                    <div>
+                        <div class="pstat-n" id="count-dropped">0</div>
+                        <div class="pstat-l">Dropped</div>
+                    </div>
+                </div>
             </div>
-            <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; text-align:center; min-width:120px;">
-                <div style="font-size:13px; color:#6b7280; margin-top:1px;">Member since</div>
-                <div id="member-since" style="font-size:20px; font-weight:600; color:#818cf8; margin: top 5px;">—</div>
+         </div>
+
+         <!-- STATS ROW -->
+          <div class="stats-row">
+            <div class="stat-block">
+                <div class="stat-block-n" id="avg-rating">—</div>
+                <div class="stat-block-l">Avg rating</div>
             </div>
-        </div>
+            <div class="stat-block">
+                <div class="stat-block-n" id="member-since">—</div>
+                <div class="stat-block-l">Member since</div>
+            </div>
+            <div class="stat-block" style="grid-column: span 2;">
+                <div class="stat-block-l" style="margin-bottom: 14px;">Top genres</div>
+                <div id="top-genres" class="genre-list"></div>
+            </div>
+          </div>
 
-        <!-- Топ жанры -->
-        <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; margin-top:24px;">
-            <h3 style="font-size:15px; color:#818cf8; margin-bottom:16px;">Top Genres</h3>
-            <div id="top-genres"></div>
-        </div>
-
-        <!-- Последние рецензии -->
-        <div style="background:#1a1a2e; padding:20px; border-radius:12px; border:1px solid #2d2d44; margin-top:24px;">
-            <h3 style="font-size:15px; color:#818cf8; margin-bottom:16px;">Recent Reviews</h3>
-            <div id="last-reviews"></div>
-        </div>
+          <!-- RECENT REVIEWS -->
+           <div class="section">
+            <div class="section-handler">
+                <div class="section-title">Recent reviews</div>
+            </div>
+            <div id="last-reviews" class="reviews-list"></div>
+           </div>
     </div>
 
     <script src="js/auth.js"></script>

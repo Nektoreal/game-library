@@ -109,18 +109,25 @@
 }
 .stat-block-n {
     font-family: var(--font-mono); font-size: 26px; font-weight: 400;
-    color: var(--accent); line-height: 1; margin-bottom: 6px;
+    color: var(--text); line-height: 1; margin-bottom: 6px;
 }
 .stat-block-l {
     font-size: 10px; color: var(--text-muted);
     text-transform: uppercase; letter-spacing: 0.1em;
 }
 .stat-block-sub {
-    font-size: 11px; color: var(--text-muted);
-    line-height: 1.5; margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 10px;
 }
 .stat-block-genres { grid-column: span 2; }
 .stat-block-genres .stat-block-l { margin-bottom: 14px; }
+
+.stat-block-unit {
+    font-size: 16px;
+    color: var(--accent);
+}
 
 /* GENRE LIST */
 .genre-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }

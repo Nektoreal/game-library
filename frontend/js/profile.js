@@ -1,7 +1,6 @@
 async function loadProfile() {
     startProgress();
     try {
-
         const userRes = await fetchWithAuth(`${API}/api/users/me`);
         const user = await userRes.json();
 
@@ -44,19 +43,7 @@ async function loadProfile() {
                 avgRating >= 8 ? 'High standards.' : avgRating >= 6 ? 'Balanced taste.' : 'Tough critic.';
         }
 
-        // Completion rate
-        const total = stats.totalGames;
-        const completed = stats.completed;
-        const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
-        document.getElementById('completion-rate').textContent = `${rate}%`;
-        document.getElementById('completion-sub').textContent =
-            `${completed} finished out of ${total} tracked.`;
-
-        // Member since
-        document.getElementById('member-since').textContent =
-            new Date(user.createdAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
-
-        // Top genres
+        // Top genre
         const genreCount = {};
         entries.forEach(e => {
             const genre = e.game?.genre;
@@ -64,9 +51,10 @@ async function loadProfile() {
         });
         const topGenres = Object.entries(genreCount)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, 4);
+            .slice(0, 3);
         const maxCount = topGenres[0]?.[1] || 1;
 
+        document.getElementById('top-genre').textContent = topGenres[0]?.[0] || '—';
         document.getElementById('top-genres').innerHTML = topGenres.length > 0
             ? topGenres.map(([genre, count]) => `
                 <div class="genre-row">
@@ -74,10 +62,18 @@ async function loadProfile() {
                     <div class="genre-bar-bg">
                         <div class="genre-bar-fill" style="width: ${Math.round((count / maxCount) * 100)}%"></div>
                     </div>
-                    <div class="genre-count">${count} game${count !== 1 ? 's' : ''}</div>
+                    <div class="genre-count">${Math.round((count / entries.length) * 100)}%</div>
                 </div>
             `).join('')
             : '<div class="empty">No data yet</div>';
+
+        // Completion rate
+        const rate = stats.totalGames > 0
+            ? Math.round((stats.completed / stats.totalGames) * 100)
+            : 0;
+        document.getElementById('completion-rate').textContent = rate;
+        document.getElementById('completion-sub').textContent =
+            `${stats.completed} finished out of ${stats.totalGames} tracked.`;
 
         // Recent reviews
         const lastReviews = reviews.slice(-4).reverse();

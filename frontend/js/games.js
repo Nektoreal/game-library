@@ -1,3 +1,12 @@
+let selectedRating = 0;
+let currentEntries = null;
+let currentUsername = null;
+let allEntries = null;
+let selectedGameId = null;
+let selectedEntryId = null;
+let selectedCoverUrl = '';
+const RAWG_KEY = '7f894402cc6d4e9d82c7aa85dda167a0';
+
 //Close sidebar with "ESC" - key
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -14,7 +23,7 @@ function renderCard(entry) {
                 </div>` : `
                 <div class="game-cover">
                     <div class="game-cover-placeholder">
-                        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;">NO COVER</span>
+                        <span class="no-cover-label">NO COVER</span>
                     </div>
                 </div>`}
                 <div class="game-info">
@@ -31,12 +40,6 @@ function renderCard(entry) {
             </div>`;
 }
 
-let selectedRating = 0;
-
-let currentEntries = null;
-
-let currentUsername = null;
-
 //Load Games from database
 async function loadGames() {
     startProgress();
@@ -46,10 +49,10 @@ async function loadGames() {
     grid.innerHTML = Array(6).fill(`
                 <div class="skeleton">
                     <div class="skeleton-img"></div>
-                    <div style="padding:16px;">
-                        <div class="skeleton-line" style="width:70%;"></div>
-                        <div class="skeleton-line" style="width:50%;"></div>
-                        <div class="skeleton-line" style="width:30%;"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line skeleton-line-70"></div>
+                        <div class="skeleton-line skeleton-line-50"></div>
+                        <div class="skeleton-line skeleton-line-30"></div>
                     </div>
                 </div>
                 `).join('');
@@ -174,11 +177,6 @@ async function deleteGame(id) {
     };
 }
 
-let selectedGameId = null;
-let selectedEntryId = null;
-
-let allEntries = null;
-
 function openSidebar(entry) {
     const banner = document.getElementById('sidebar-banner');
     if (entry.game.coverUrl) {
@@ -261,7 +259,6 @@ function setRating(rating) {
         star.classList.toggle('active', parseInt(star.dataset.value) <= rating);
     });
 }
-const RAWG_KEY = '7f894402cc6d4e9d82c7aa85dda167a0';
 
 async function searchGames(query) {
     const results = document.getElementById('search-result');
@@ -276,12 +273,11 @@ async function searchGames(query) {
 
     results.style.display = 'block';
     results.innerHTML = data.results.map(game => `
-            <div onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})" style="padding: 10px; cursor: pointer;">
+            <div class="search-item" onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})">
                 ${game.name}
             </div>
         `).join('');
 }
-let selectedCoverUrl = '';
 
 function selectGame(game) {
     selectedCoverUrl = game.background_image || '';
@@ -312,8 +308,6 @@ document.addEventListener('click', function (e) {
 
     if (!gameTitle.contains(e.target) && !searchResult.contains(e.target)) {
         searchResult.style.display = 'none';
-    } else {
-
     }
 });
 
@@ -359,13 +353,12 @@ async function loadReviews(gameId) {
     let html = '';
 
     //User Review
-    //html += `<h4 style="color:#818cf8; font-size:13px; margin-bottom:8px;">My Review</h4>`;
     if (myReview) {
         html += `<div class="my-review-block">
     <div class="review-existing">
         <div class="review-existing-header">
             <span class="review-score-display">${myReview.rating}<span class="review-score-max">/10</span></span>
-            <div style="display:flex; gap:1px;">
+            <div class="review-actions">
                 <button onclick="editReview('${myReview.id}', ${myReview.rating}, '${myReview.text.replace(/'/g, "\\'").replace(/\r?\n/g, "\\n")}')" class="btn-review-action">Edit</button>
                 <button onclick="deleteReview('${myReview.id}')" class="btn-review-delete">Delete</button>
             </div>
@@ -386,12 +379,12 @@ async function loadReviews(gameId) {
     }
 
     if (otherReviews.length > 0) {
-        html += `<div class="sidebar-section-title" style="margin-top:20px;">Other Reviews</div>`;
+        html += `<div class="sidebar-section-title other-reviews-title">Other Reviews</div>`;
         html += otherReviews.map(review => `
             <div class="review-other">
                 <div class="review-other-header">
                     <span class="review-other-user">${review.user.username}</span>
-                    <span class="review-score-display" style="font-size:14px;">${review.rating}<span class="review-score-max">/10</span></span>
+                    <span class="review-score-display review-score-other">${review.rating}<span class="review-score-max">/10</span></span>
                 </div>
                 <p class="review-text-display">${review.text}</p>
             </div>`).join('');
@@ -410,9 +403,9 @@ function editReview(id, rating, text) {
                 ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<span class="review-star" data-value="${n}" onclick="setRating(${n})">${n}</span>`).join('')}
             </div>
             <textarea id="review-text" class="review-textarea review-textarea-edit">${text.replace(/\\n/g, '\n')}</textarea>
-            <div style="display:flex; gap:1px;">
-                <button onclick="saveEditReview('${id}')" class="btn-save-review" style="flex:1;">Save</button>
-                <button onclick="loadReviews('${selectedGameId}')" class="btn-review-action" style="flex:1; padding:14px;">Cancel</button>
+            <div class="review-actions">
+                <button onclick="saveEditReview('${id}')" class="btn-save-review review-btn-flex">Save</button>
+                <button onclick="loadReviews('${selectedGameId}')" class="btn-review-action review-btn-flex">Cancel</button>
             </div>
         </div>`;
 

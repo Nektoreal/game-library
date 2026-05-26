@@ -109,6 +109,11 @@
 }
 .sort-select:focus { border-color: var(--border-strong);}
 .sort-select option { background: var(--surface2);}
+.search-item { padding: 10px; cursor: pointer; }
+.review-actions { display: flex; gap: 1px; }
+.other-reviews-title { margin-top: 20px; }
+.review-score-other { font-size: 14px; }
+.review-btn-flex { flex: 1; padding: 14px; }
 
 /* FILTER ROW */
 .filter-row {
@@ -138,6 +143,11 @@
     border-left: 1px solid var(--border);
     border-top: 1px solid var(--border);
 }
+
+.skeleton-body { padding: 16px; }
+.skeleton-line-70 { width: 70%; }
+.skeleton-line-50 { width: 50%; }
+.skeleton-line-30 { width: 30%; }
 
 /* GAME CARD */
 .game-card {
@@ -200,6 +210,13 @@
     transition: color 0.15s, border-color 0.15s;
 }
 .btn-delete:hover {color: #f06060; border-color: rgba(240, 96, 96, 0.3);}
+
+.no-cover-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+}
 
 /* SIDEBAR */
 .sidebar {

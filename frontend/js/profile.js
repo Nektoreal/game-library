@@ -22,29 +22,41 @@ async function loadProfile() {
         document.getElementById('count-planned').textContent = stats.planned;
         document.getElementById('count-completed').textContent = stats.completed;
 
-        const reviewsRes = await fetchWithAuth(`${API}/api/reviews/me`);
-        const reviews = await reviewsRes.json();
-
-        //Current playing
+        // Currently playing
         const playing = entries.find(e => e.status === 'PLAYING');
         if (playing) {
             document.getElementById('cp-title').textContent = playing.game.title;
-            document.getElementById('cp-sub').textContent = 
+            document.getElementById('cp-sub').textContent =
                 `${playing.game.genre} · ${playing.game.platform} · ${playing.game.releaseYear}`;
-                document.getElementById('currently-playing').style.display = 'flex';
+            document.getElementById('currently-playing').style.display = 'flex';
         }
 
-        //Avg rating
+        const reviewsRes = await fetchWithAuth(`${API}/api/reviews/me`);
+        const reviews = await reviewsRes.json();
+
+        // Avg rating
         const avgRating = reviews.length > 0
             ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
             : null;
         document.getElementById('avg-rating').textContent = avgRating || '—';
+        if (avgRating) {
+            document.getElementById('avg-rating-sub').textContent =
+                avgRating >= 8 ? 'High standards.' : avgRating >= 6 ? 'Balanced taste.' : 'Tough critic.';
+        }
 
-        //Member since
+        // Completion rate
+        const total = stats.totalGames;
+        const completed = stats.completed;
+        const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+        document.getElementById('completion-rate').textContent = `${rate}%`;
+        document.getElementById('completion-sub').textContent =
+            `${completed} finished out of ${total} tracked.`;
+
+        // Member since
         document.getElementById('member-since').textContent =
             new Date(user.createdAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 
-        //Top genres
+        // Top genres
         const genreCount = {};
         entries.forEach(e => {
             const genre = e.game?.genre;
@@ -57,34 +69,37 @@ async function loadProfile() {
 
         document.getElementById('top-genres').innerHTML = topGenres.length > 0
             ? topGenres.map(([genre, count]) => `
-        <div class="genre-row">
-          <div class="genre-name">${genre}</div>
-          <div class="genre-bar-bg">
-            <div class="genre-bar-fill" style="width: ${Math.round((count / maxCount) * 100)}%"></div>
-          </div>
-          <div class="genre-count">${count} game${count !== 1 ? 's' : ''}</div>
-        </div>
-      `).join('')
-            : '<div style="font-size:12px; color:var(--text-muted);">No data yet</div>';
+                <div class="genre-row">
+                    <div class="genre-name">${genre}</div>
+                    <div class="genre-bar-bg">
+                        <div class="genre-bar-fill" style="width: ${Math.round((count / maxCount) * 100)}%"></div>
+                    </div>
+                    <div class="genre-count">${count} game${count !== 1 ? 's' : ''}</div>
+                </div>
+            `).join('')
+            : '<div class="empty">No data yet</div>';
 
-        //Recent reviews
+        // Recent reviews
         const lastReviews = reviews.slice(-4).reverse();
         document.getElementById('last-reviews').innerHTML = lastReviews.length > 0
-            ? lastReviews.map(r => `
-                <div class="review-item">
+            ? lastReviews.map((r, i) => `
+                <div class="recent-item">
+                    <div class="recent-num">0${i + 1}</div>
                     <div>
-                        <div class="review-title">${r.game?.title || 'Unknown'}</div>
-                        <div class="review-text">${r.text || ''}</div>
+                        <div class="recent-title">${r.game?.title || 'Unknown'}</div>
+                        <div class="recent-meta">${r.game?.genre || ''} · ${r.game?.platform || ''} · ${r.game?.releaseYear || ''}</div>
                     </div>
-                    <div class="review-score">${r.rating}/10</div>
+                    <div class="recent-score">${r.rating}/10</div>
                 </div>
-            `).join('') : '<div class="no-reviews">No reviews yet</div>';
+            `).join('')
+            : '<div class="no-reviews">No reviews yet</div>';
+
         finishProgress();
     } catch (e) {
         console.error('Profile load error:', e);
         finishProgress();
-        document.querySelector('.container').innerHTML = 
-        '<div class="empty">Failed to load profile. Try again later.</div>';
+        document.querySelector('.container').innerHTML =
+            '<div class="empty">Failed to load profile. Try again later.</div>';
     }
 }
 loadProfile();

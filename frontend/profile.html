@@ -19,7 +19,7 @@
 <body>
     <div id="progress-bar"></div>
     <nav>
-        <a class="nav-logo" href="#">game<span>.</span>Library</a>
+        <a class="nav-logo" href="#">game<span>.</span>library</a>
         <div class="nav-links">
             <a href="profile.html" class="active">Profile</a>
         </div>
@@ -30,15 +30,15 @@
     </nav>
 
     <div class="container">
-        <!-- PROFILE HEADEAR -->
-        <div class="profile-header">
 
+        <!-- PROFILE HEADER -->
+        <div class="profile-header">
             <div class="profile-avatar-wrap">
                 <div id="profile-avatar" class="profile-avatar">P</div>
                 <div class="online-dot"></div>
             </div>
             <div class="profile-info">
-                <div class="profile-handle-label">@<span id="profile-username">username</span></div>
+                <div class="profile-handle-label">@ <span id="profile-username">username</span></div>
                 <div class="profile-name" id="profile-display-name">username</div>
                 <div class="profile-email" id="profile-email">email</div>
                 <div class="profile-stats">
@@ -67,7 +67,7 @@
         </div>
 
         <!-- CURRENTLY PLAYING -->
-        <div class="currently-playing" id="currently-playing" style="display: none;">
+        <div class="currently-playing" id="currently-playing" style="display:none;">
             <div class="cp-label">▶ Now playing</div>
             <div class="cp-title" id="cp-title">—</div>
             <div class="cp-sub" id="cp-sub">—</div>
@@ -78,6 +78,12 @@
             <div class="stat-block">
                 <div class="stat-block-n" id="avg-rating">—</div>
                 <div class="stat-block-l">Avg rating</div>
+                <div class="stat-block-sub" id="avg-rating-sub"></div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-block-n" id="completion-rate">—</div>
+                <div class="stat-block-l">Completion rate</div>
+                <div class="stat-block-sub" id="completion-sub"></div>
             </div>
             <div class="stat-block">
                 <div class="stat-block-n" id="member-since">—</div>
@@ -89,13 +95,14 @@
             </div>
         </div>
 
-        <!-- RECENT REVIEWS -->
+        <!-- RECENT ACTIVITY -->
         <div class="section">
             <div class="section-header">
                 <div class="section-title">Recent reviews</div>
             </div>
-            <div id="last-reviews" class="reviews-list"></div>
+            <div id="last-reviews" class="recent-list"></div>
         </div>
+
     </div>
 
     <script src="js/auth.js"></script>

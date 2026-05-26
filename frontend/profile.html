@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>game.Library — Profile</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/profile.css">
 </head>
@@ -24,15 +28,18 @@
             <button onclick="logout()">Logout</button>
         </div>
     </nav>
-    
+
     <div class="container">
         <!-- PROFILE HEADEAR -->
-         <div class="profile-header">
+        <div class="profile-header">
+
             <div class="profile-avatar-wrap">
                 <div id="profile-avatar" class="profile-avatar">P</div>
+                <div class="online-dot"></div>
             </div>
             <div class="profile-info">
-                <div class="profile-handle" id="profile-username">username</div>
+                <div class="profile-handle-label">@<span id="profile-username">username</span></div>
+                <div class="profile-name" id="profile-display-name">username</div>
                 <div class="profile-email" id="profile-email">email</div>
                 <div class="profile-stats">
                     <div class="pstat">
@@ -57,10 +64,17 @@
                     </div>
                 </div>
             </div>
-         </div>
+        </div>
 
-         <!-- STATS ROW -->
-          <div class="stats-row">
+        <!-- CURRENTLY PLAYING -->
+        <div class="currently-playing" id="currently-playing" style="display: none;">
+            <div class="cp-label">▶ Now playing</div>
+            <div class="cp-title" id="cp-title">—</div>
+            <div class="cp-sub" id="cp-sub">—</div>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="stats-row">
             <div class="stat-block">
                 <div class="stat-block-n" id="avg-rating">—</div>
                 <div class="stat-block-l">Avg rating</div>
@@ -73,18 +87,19 @@
                 <div class="stat-block-l">Top genres</div>
                 <div id="top-genres" class="genre-list"></div>
             </div>
-          </div>
+        </div>
 
-          <!-- RECENT REVIEWS -->
-           <div class="section">
+        <!-- RECENT REVIEWS -->
+        <div class="section">
             <div class="section-header">
                 <div class="section-title">Recent reviews</div>
             </div>
             <div id="last-reviews" class="reviews-list"></div>
-           </div>
+        </div>
     </div>
 
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
 </body>
+
 </html>

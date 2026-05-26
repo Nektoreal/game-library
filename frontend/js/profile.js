@@ -6,6 +6,7 @@ async function loadProfile() {
         const user = await userRes.json();
 
         document.getElementById('profile-username').textContent = user.username;
+        document.getElementById('profile-display-name').textContent = user.username;
         document.getElementById('profile-email').textContent = user.email;
         document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
 
@@ -23,6 +24,15 @@ async function loadProfile() {
 
         const reviewsRes = await fetchWithAuth(`${API}/api/reviews/me`);
         const reviews = await reviewsRes.json();
+
+        //Current playing
+        const playing = entries.find(e => e.status === 'PLAYING');
+        if (playing) {
+            document.getElementById('cp-title').textContent = playing.game.title;
+            document.getElementById('cp-sub').textContent = 
+                `${playing.game.genre} · ${playing.game.platform} · ${playing.game.releaseYear}`;
+                document.getElementById('currently-playing').style.display = 'flex';
+        }
 
         //Avg rating
         const avgRating = reviews.length > 0

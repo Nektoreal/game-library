@@ -21,6 +21,15 @@ async function loadProfile() {
         document.getElementById('count-planned').textContent = stats.planned;
         document.getElementById('count-completed').textContent = stats.completed;
 
+        //Completed datetime data
+        const completedMap = {};
+        entries.forEach(e => {
+            if (e.completedAt) {
+                completedMap[e.game.id] = new Date(e.completedAt)
+                    .toLocaleDateString('en-GB', {day:'numeric' ,month:'short', year: 'numeric'});
+            }
+        });
+
         // Currently playing
         const playing = entries.find(e => e.status === 'PLAYING');
         if (playing) {
@@ -85,7 +94,10 @@ async function loadProfile() {
                         <div class="recent-title">${r.game?.title || 'Unknown'}</div>
                         <div class="recent-meta">${r.game?.genre || ''} · ${r.game?.platform || ''} · ${r.game?.releaseYear || ''}</div>
                     </div>
-                    <div class="recent-score">${r.rating}/10</div>
+                    <div class="recent-right">
+                        <div class="recent-score">${r.rating}/10</div>
+                        <div class="recent-completed">${completedMap[r.game?.id] || '—'}</div>
+                    </div>
                 </div>
             `).join('')
             : '<div class="no-reviews">No reviews yet</div>';

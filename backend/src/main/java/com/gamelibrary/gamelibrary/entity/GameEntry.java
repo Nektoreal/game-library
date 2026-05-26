@@ -26,4 +26,5 @@ public class GameEntry {
 
   @Column(updatable = false)
   private LocalDateTime addedAt;
+  private LocalDateTime completedAt;
 }

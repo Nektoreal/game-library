@@ -196,6 +196,12 @@
     letter-spacing: 0.05em;
     border: 1px solid var(--border); border-top: none;
 }
+.recent-completed {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--text-muted); letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+.recent-right { text-align: right; }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {

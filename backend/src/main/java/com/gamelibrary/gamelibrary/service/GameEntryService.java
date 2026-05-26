@@ -56,6 +56,12 @@ public class GameEntryService {
   public GameEntry updateStatus(String id, String status) {
     GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
     entry.setStatus(GameStatus.valueOf(status));
+
+    if (GameStatus.valueOf(status) == GameStatus.COMPLETED) {
+      entry.setCompletedAt(LocalDateTime.now());
+    } else {
+      entry.setCompletedAt(null);
+    }
     return gameEntryRepository.save(entry);
   }
 }

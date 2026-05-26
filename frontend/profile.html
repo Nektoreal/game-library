@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>game.Library — Profile</title>
@@ -17,7 +17,6 @@
     <nav>
         <a class="nav-logo" href="#">game<span>.</span>Library</a>
         <div class="nav-links">
-            <a href="games.html">Library</a>
             <a href="profile.html" class="active">Profile</a>
         </div>
         <div class="nav-right">
@@ -44,15 +43,15 @@
                         <div class="pstat-n" id="count-completed">0</div>
                         <div class="pstat-l">Completed</div>
                     </div>
-                    <div>
+                    <div class="pstat">
                         <div class="pstat-n" id="count-playing">0</div>
                         <div class="pstat-l">Playing</div>
                     </div>
-                    <div>
+                    <div class="pstat">
                         <div class="pstat-n" id="count-planned">0</div>
                         <div class="pstat-l">Planned</div>
                     </div>
-                    <div>
+                    <div class="pstat">
                         <div class="pstat-n" id="count-dropped">0</div>
                         <div class="pstat-l">Dropped</div>
                     </div>
@@ -70,15 +69,15 @@
                 <div class="stat-block-n" id="member-since">—</div>
                 <div class="stat-block-l">Member since</div>
             </div>
-            <div class="stat-block" style="grid-column: span 2;">
-                <div class="stat-block-l" style="margin-bottom: 14px;">Top genres</div>
+            <div class="stat-block stat-block-genres">
+                <div class="stat-block-l">Top genres</div>
                 <div id="top-genres" class="genre-list"></div>
             </div>
           </div>
 
           <!-- RECENT REVIEWS -->
            <div class="section">
-            <div class="section-handler">
+            <div class="section-header">
                 <div class="section-title">Recent reviews</div>
             </div>
             <div id="last-reviews" class="reviews-list"></div>

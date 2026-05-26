@@ -122,6 +122,14 @@
     border: 1px solid var(--border); border-top: none;
 }
 
+.stat-block-genres {
+    grid-column: span 2;
+}
+
+.stat-block-genres .stat-block-l {
+    margin-bottom: 14px;
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
     .stats-row { grid-template-columns: repeat(2, 1fr);}

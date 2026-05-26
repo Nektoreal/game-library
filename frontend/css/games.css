@@ -264,6 +264,10 @@
 }
 #sidebar-reviews {padding: 0 24px;}
 
+.filter-buttons-mobile {
+  margin: 16px 0;
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
     .games-grid { grid-template-columns: repeat(2, 1fr);}

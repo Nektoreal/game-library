@@ -19,15 +19,26 @@ function logout() {
     window.location.href = 'index.html';
 }
 
-function startProgress(){
+function startProgress() {
     const bar = document.getElementById('progress-bar');
-    bar.style.width = '70%';
+    bar.style.opacity = '1';
+    bar.style.width = '0%';
+    bar.style.transition = 'width 2s ease';
+    setTimeout(() => { bar.style.width = '85%'; }, 10);
 }
 
-function finishProgress(){
+function finishProgress() {
     const bar = document.getElementById('progress-bar');
+    bar.style.transition = 'width 0.2s ease';
     bar.style.width = '100%';
-    setTimeout(() => { bar.style.width = '0%';}, 300);
+    setTimeout(() => {
+        bar.style.opacity = '0';
+        bar.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+            bar.style.width = '0%';
+            bar.style.opacity = '1';
+        }, 300);
+    }, 200);
 }
 
 function showToast(message, type = 'success') {

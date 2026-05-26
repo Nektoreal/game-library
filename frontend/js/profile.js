@@ -26,7 +26,7 @@ async function loadProfile() {
         entries.forEach(e => {
             if (e.completedAt) {
                 completedMap[e.game.id] = new Date(e.completedAt)
-                    .toLocaleDateString('en-GB', {day:'numeric' ,month:'short', year: 'numeric'});
+                    .toLocaleDateString('en-US', {month:'short', day:'numeric', year: 'numeric'});
             }
         });
 
@@ -82,7 +82,7 @@ async function loadProfile() {
             : 0;
         document.getElementById('completion-rate').textContent = rate;
         document.getElementById('completion-sub').textContent =
-            `${stats.completed} finished out of ${stats.totalGames} tracked.`;
+            `${stats.completed} finished out of ${stats.totalGames} tracked. ${stats.planned} in backlog, staring back.`;
 
         // Recent reviews
         const lastReviews = reviews.slice(-4).reverse();
@@ -96,7 +96,7 @@ async function loadProfile() {
                     </div>
                     <div class="recent-right">
                         <div class="recent-score">${r.rating}/10</div>
-                        <div class="recent-completed">${completedMap[r.game?.id] || '—'}</div>
+                        <div class="recent-completed">${completedMap[r.game?.id] ? 'Completed ' + completedMap[r.game?.id] : '—'}</div>
                     </div>
                 </div>
             `).join('')

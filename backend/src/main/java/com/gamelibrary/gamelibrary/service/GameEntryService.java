@@ -4,11 +4,12 @@ import com.gamelibrary.gamelibrary.entity.GameEntry;
 import com.gamelibrary.gamelibrary.entity.GameStatus;
 import com.gamelibrary.gamelibrary.repository.GameEntryRepository;
 import com.gamelibrary.gamelibrary.repository.GameRepository;
+import com.gamelibrary.gamelibrary.repository.ReviewRepository;
 import com.gamelibrary.gamelibrary.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.cglib.core.Local;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class GameEntryService {
   private final GameEntryRepository gameEntryRepository;
   private final UserRepository userRepository;
   private final GameRepository gameRepository;
+  private final ReviewRepository reviewRepository;
 
   public List<GameEntry> getAllGameEntry(){
     return gameEntryRepository.findAll();
@@ -53,6 +55,13 @@ public class GameEntryService {
   }
 
   public void deleteGameEntry(String id){
+
+    GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
+
+    //Delete all review
+    reviewRepository.deleteByGameId(entry.getGame().getId());
+
+    //and delete 'this' review
     gameEntryRepository.deleteById(id);
   }
 

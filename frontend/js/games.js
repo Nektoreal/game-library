@@ -31,7 +31,7 @@ function renderCard(entry) {
                     <div class="game-footer">
                         <span class="status-badge ${entry.status}">${entry.status}</span>
                         <div class="game-score-row">
-                            ${entry.avgRating ? `<span class="score-val">${entry.avgRating}/10</span>` : ''}
+                            ${entry.avgRating ? `<span class="score-val">${parseFloat(entry.avgRating)}/10</span>` : ''}
                             <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" class="btn-delete">Delete</button>
                         </div>
                     </div>

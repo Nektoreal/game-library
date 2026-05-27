@@ -23,7 +23,11 @@
     overflow: visible;
 }
 
-.profile-avatar-wrap { position: relative; }
+.profile-avatar-wrap { 
+    position: relative;
+    width: fit-content;    
+}
+
 .profile-avatar {
     width: 96px; height: 96px;
     background: var(--surface2);

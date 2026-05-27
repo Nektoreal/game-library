@@ -308,6 +308,9 @@
     .add-select { width: 100%; }
     .btn-delete::before { content: '✕'; font-size: 11px; }
     .btn-delete { font-size: 0; }
+    .score-val {
+        font-size: 10px;
+    }
 }
 
 /* REVIEW FORM */

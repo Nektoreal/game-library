@@ -187,10 +187,14 @@ function openSidebar(entry) {
     selectedEntryId = entry.id;
 
     document.getElementById('sidebar-title').textContent = entry.game.title;
-    document.getElementById('sidebar-meta').textContent =
-        `${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}`;
-    document.getElementById('sidebar-status').innerHTML =
-        `<span class = "status-badge ${entry.status}">${entry.status}</span>`;
+    const completedText = entry.completedAt
+    ? ` • Completed ${new Date(entry.completedAt + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+    : '';
+
+document.getElementById('sidebar-meta').textContent =
+    `${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}${completedText}`;
+document.getElementById('sidebar-status').innerHTML =
+    `<span class="status-badge ${entry.status}">${entry.status}</span>`;
     loadReviews(entry.game.id);
     document.getElementById('sidebar').style.transform = 'translateX(0)';
     document.getElementById('overlay').style.display = 'block';

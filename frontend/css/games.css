@@ -262,6 +262,16 @@
     text-transform: uppercase; letter-spacing: 0.08em;
     padding: 8px 24px 16px;
 }
+
+.sidebar-completed {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: none;
+}
 .status-select {
     font-family: var(--font-mono); font-size: 12px;
     background: var(--surface2); border: none;

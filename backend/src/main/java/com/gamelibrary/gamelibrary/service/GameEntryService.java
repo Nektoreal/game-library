@@ -7,6 +7,8 @@ import com.gamelibrary.gamelibrary.repository.GameRepository;
 import com.gamelibrary.gamelibrary.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,6 +44,11 @@ public class GameEntryService {
     }
 
     gameEntry.setAddedAt(LocalDateTime.now());
+
+    if (gameEntry.getStatus() == GameStatus.COMPLETED) {
+      gameEntry.setCompletedAt(LocalDateTime.now());
+    }
+
     return gameEntryRepository.save(gameEntry);
   }
 

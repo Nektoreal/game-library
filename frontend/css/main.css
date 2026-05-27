@@ -164,6 +164,11 @@ nav button:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.25); 
     display: none; position: fixed; inset: 0;
     background: rgba(0, 0, 0, 0.6); z-index: 9999;
     align-items: center; justify-content: center;
+    opacity: 0; /* ← было 1, должно быть 0 */
+    transition: opacity 0.2s ease;
+}
+#confirm-dialog.visible {
+    opacity: 1;
 }
 .confirm-box {
     background: var(--surface);

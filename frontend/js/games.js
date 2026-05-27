@@ -163,16 +163,21 @@ async function deleteGame(id) {
 
     const dialog = document.getElementById('confirm-dialog');
     dialog.style.display = 'flex';
+    requestAnimationFrame(() => dialog.classList.add('visible'));
 
     document.getElementById('confirm-yes').onclick = async () => {
+        dialog.classList.remove('visible');
+        setTimeout(async () => {
         dialog.style.display = 'none';
         await fetchWithAuth(`${API}/api/entries/${id}`, { method: 'DELETE' });
         showToast('Game deleted!', 'success');
         loadGames();
+    }, 200);
     };
 
     document.getElementById('confirm-no').onclick = () => {
-        dialog.style.display = 'none';
+        dialog.classList.remove('visible');
+        setTimeout(() => dialog.style.display = 'none', 200);
     };
 }
 
@@ -188,13 +193,13 @@ function openSidebar(entry) {
 
     document.getElementById('sidebar-title').textContent = entry.game.title;
     const completedText = entry.completedAt
-    ? ` • Completed ${new Date(entry.completedAt + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
-    : '';
+        ? ` • Completed ${new Date(entry.completedAt + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+        : '';
 
-document.getElementById('sidebar-meta').textContent =
-    `${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}${completedText}`;
-document.getElementById('sidebar-status').innerHTML =
-    `<span class="status-badge ${entry.status}">${entry.status}</span>`;
+    document.getElementById('sidebar-meta').textContent =
+        `${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}${completedText}`;
+    document.getElementById('sidebar-status').innerHTML =
+        `<span class="status-badge ${entry.status}">${entry.status}</span>`;
     loadReviews(entry.game.id);
     document.getElementById('sidebar').style.transform = 'translateX(0)';
     document.getElementById('overlay').style.display = 'block';

@@ -90,18 +90,16 @@ function filterGames(status) {
     const filtered = status === 'ALL' ? allEntries : allEntries.filter(entry => entry.status === status);
     currentEntries = filtered;
 
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`filter-${status}`).classList.add('active');
+
     const grid = document.getElementById('gamesGrid');
 
     if (filtered.length === 0) {
         grid.innerHTML = `<div class="empty">No ${status.toLowerCase()} games yet</div>`;
         return;
     }
-
-    const filterButtons = document.querySelectorAll('.filter-btn');
-
-    filterButtons.forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`filter-${status}`).classList.add('active');
-
 
     grid.innerHTML = filtered.map(entry => renderCard(entry)).join('');
 }

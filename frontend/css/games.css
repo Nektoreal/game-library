@@ -311,6 +311,10 @@
     .score-val {
         font-size: 10px;
     }
+    #gameYear {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 /* REVIEW FORM */
@@ -424,4 +428,15 @@
 .filter-btn.active {
     color: var(--accent);
     background: var(--accent-dim);
+}
+
+.games-grid .empty {
+    grid-column: 1 / -1;
+    padding: 80px 0;
+    border-left: none;
+}
+
+.games-grid:has(.empty) {
+    border-left: none;
+    border-top: none;
 }

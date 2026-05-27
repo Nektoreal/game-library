@@ -6,7 +6,7 @@ async function loadProfile() {
 
         document.getElementById('profile-username').textContent = user.username;
         document.getElementById('profile-display-name').textContent = user.username;
-        document.getElementById('profile-email').textContent = user.email;
+        //document.getElementById('profile-email').textContent = user.email;
         document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
 
         const entriesRes = await fetchWithAuth(`${API}/api/entries`);

@@ -104,7 +104,7 @@ nav button:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.25); 
 /* PROGRESS BAR */
 #progress-bar {
     position: fixed; top: 0; left: 0;
-    height: 2px; width: 0%;
+    height: 3px; width: 0%;
     background: var(--accent);
     z-index: 9999;
     transition: width 0.4s ease, opacity 0.4s ease;
@@ -227,4 +227,18 @@ nav button:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.25); 
 }
 @media (min-width: 601px) {
     .filter-buttons-mobile { display: none !important; }
+}
+
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }

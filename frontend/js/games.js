@@ -5,7 +5,6 @@ let allEntries = null;
 let selectedGameId = null;
 let selectedEntryId = null;
 let selectedCoverUrl = '';
-const RAWG_KEY = '7f894402cc6d4e9d82c7aa85dda167a0';
 
 //Close sidebar with "ESC" - key
 document.addEventListener('keydown', function (e) {
@@ -262,30 +261,64 @@ function setRating(rating) {
 
 async function searchGames(query) {
     const results = document.getElementById('search-result');
-
     if (query.length < 2) {
         results.style.display = 'none';
         return;
     }
 
-    const res = await fetch(`https://api.rawg.io/api/games?key=${RAWG_KEY}&search=${query}&page_size=5`);
+    const res = await fetchWithAuth(`${API}/api/igdb/search?query=${encodeURIComponent(query)}`);
     const data = await res.json();
 
     results.style.display = 'block';
-    results.innerHTML = data.results.map(game => `
-            <div class="search-item" onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})">
+    results.innerHTML = data.map(game => `
+            <div onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})" style="padding: 10px; cursor: pointer;">
                 ${game.name}
             </div>
         `).join('');
 }
 
 function selectGame(game) {
-    selectedCoverUrl = game.background_image || '';
+    const rawUrl = game.cover?.url || '';
+    selectedCoverUrl = rawUrl
+        ? 'https:' + rawUrl.replace('t_thumb', 't_screenshot_big')
+        : '';
 
     document.getElementById('gameTitle').value = game.name;
-    document.getElementById('gameGenre').value = game.genres[0].name;
-    document.getElementById('gamePlatform').value = game.parent_platforms[0].platform.name;
-    document.getElementById('gameYear').value = game.released.substring(0, 4);
+
+    // Genre
+    const genreMap = {
+        'Role-playing (RPG)': 'RPG',
+        'Shooter': 'Shooter',
+        'Strategy': 'Strategy',
+        'Simulator': 'Simulator',
+        'Sport': 'Sports',
+        'Puzzle': 'Puzzle',
+        'Action': 'Action',
+        'Adventure': 'Action',
+    };
+    const igdbGenre = game.genres?.[0]?.name || '';
+    document.getElementById('gameGenre').value = genreMap[igdbGenre] || 'Other';
+
+    // Platform
+    const platformMap = {
+        'PC (Microsoft Windows)': 'PC',
+        'PlayStation 5': 'PlayStation 5',
+        'PlayStation 4': 'PlayStation 4',
+        'Xbox Series X|S': 'Xbox Series X|S',
+        'Nintendo Switch': 'Nintendo Switch',
+        'iOS': 'Mobile',
+        'Android': 'Mobile',
+    };
+    const priority = ['PC (Microsoft Windows)', 'PlayStation 5', 'PlayStation 4', 'Xbox Series X|S', 'Nintendo Switch'];
+    const platforms = game.platforms?.map(p => p.name) || [];
+    const bestPlatform = priority.find(p => platforms.includes(p)) || platforms[0] || '';
+    document.getElementById('gamePlatform').value = platformMap[bestPlatform] || 'Other';
+
+    // Year
+    document.getElementById('gameYear').value = game.first_release_date
+        ? new Date(game.first_release_date * 1000).getFullYear()
+        : '';
+
     document.getElementById('search-result').style.display = 'none';
     document.getElementById('manual-form').style.display = 'block';
 }

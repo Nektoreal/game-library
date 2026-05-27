@@ -50,10 +50,29 @@
             <!-- Manual form -->
              <div id="manual-form" style="display: none; margin-top: 1px;">
                 <div class="add-row">
-                    <input type="text" id="gameGenre" class="add-input" placeholder="Genre">
-                    <input type="text" id="gamePlatform" class="add-input" placeholder="Platform">
-                    <input type="number" id="gameYear" class="add-input" placeholder="Year">
-                    <select id="gameStatusManual" class="add-select">
+                    <select id="gameGenre" class="add-select" style="flex: 1;">
+                            <option value="">Genre…</option>
+                                <option>Action</option>
+                                <option>RPG</option>
+                                <option>Strategy</option>
+                                <option>Simulator</option>
+                                <option>Sports</option>
+                                <option>Puzzle</option>
+                                <option>Shooter</option>
+                                <option>Other</option>
+                            </select>
+                    <select id="gamePlatform" class="add-select" style="flex: 1;">
+                        <option value="">Platform…</option>
+                        <option>PC</option>
+                        <option>PlayStation 5</option>
+                        <option>PlayStation 4</option>
+                        <option>Xbox Series X|S</option>
+                        <option>Nintendo Switch</option>
+                        <option>Other</option>
+                    </select>
+                    <input type="number" id="gameYear" class="add-input" placeholder="Year" readonly
+                        style="width: 80px; flex: none; cursor: default;">
+                    <select id="gameStatusManual" class="add-select" style="flex: none;">
                         <option value="PLANNED">Planned</option>
                         <option value="PLAYING">Playing</option>
                         <option value="COMPLETED">Completed</option>

@@ -41,6 +41,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
           .requestMatchers("/api/auth/**").permitAll()
+          .requestMatchers("/api/igdb/**").permitAll()
           .requestMatchers("/error").permitAll()
           .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
           .anyRequest().authenticated()

@@ -30,4 +30,6 @@ public class Game {
   private Integer releaseYear;
 
   private String coverUrl;
+
+  private String processName;
 }

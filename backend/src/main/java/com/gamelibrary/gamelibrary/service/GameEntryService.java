@@ -80,4 +80,13 @@ public class GameEntryService {
     }
     return gameEntryRepository.save(entry);
   }
+
+  public GameEntry addPlaytime (String id, long seconds){
+    GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
+
+    entry.setPlaytime(entry.getPlaytime() + seconds);
+    entry.setLastSession(LocalDateTime.now());
+
+    return gameEntryRepository.save(entry);
+  }
 }

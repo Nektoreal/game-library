@@ -38,4 +38,9 @@ public class GameEntryController {
   public GameEntry updateStatus(@PathVariable String id, @RequestBody Map<String, String> body) {
     return gameEntryService.updateStatus(id, body.get("status"));
   }
+
+  @PutMapping("/{id}/playtime")
+  public GameEntry addPlaytime(@PathVariable String id, @RequestBody Map<String, String> body){
+    return gameEntryService.addPlaytime(id, Long.parseLong(body.get("seconds")));
+  }
 }

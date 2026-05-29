@@ -27,4 +27,9 @@ public class GameEntry {
   @Column(updatable = false)
   private LocalDateTime addedAt;
   private LocalDateTime completedAt;
+
+  @Column(columnDefinition = "bigint default 0")
+  private long playtime;
+
+  private LocalDateTime lastSession;
 }

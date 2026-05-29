@@ -29,4 +29,9 @@ public class GameController {
   public void deleteGame(@RequestBody String id){ //take the {id} from the URL and pass it into the method
     gameService.deleteGame(id);
   }
+
+  @PutMapping("/{id}")
+  public Game updateGame(@PathVariable String id, @RequestBody Game game){
+    return gameService.updateGame(id, game);
+  }
 }

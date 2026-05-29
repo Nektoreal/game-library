@@ -26,4 +26,13 @@ public class GameService {
   public void deleteGame(String id){
     gameRepository.deleteById(id);
   }
+
+  public Game updateGame(String id, Game game){
+    Game existing = gameRepository.findById(id).orElseThrow();
+
+    existing.setProcessName(game.getProcessName());
+
+    return gameRepository.save(existing);
+    
+  }
 }

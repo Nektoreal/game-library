@@ -6,6 +6,9 @@ let selectedGameId = null;
 let selectedEntryId = null;
 let selectedCoverUrl = '';
 
+let currentPage = 0;
+let totalPages = 0;
+
 //Close sidebar with "ESC" - key
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -60,7 +63,7 @@ function renderCard(entry) {
 }
 
 //Load Games from database
-async function loadGames() {
+async function loadGames(page = 0) {
     startProgress();
 
     //show skeleton
@@ -76,8 +79,12 @@ async function loadGames() {
                 </div>
                 `).join('');
 
-    const res = await fetchWithAuth(`${API}/api/entries`);
-    const entries = await res.json();
+    const res = await fetchWithAuth(`${API}/api/entries?page=${page}&size=20`);
+    const data = await res.json();
+    const entries = data.content;
+
+    currentPage = data.number;
+    totalPages = data.totalPages;
 
     if (entries.length === 0) {
         grid.innerHTML = '<div class="empty">No games yet. Add your first game!</div>';
@@ -103,6 +110,7 @@ async function loadGames() {
     document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status === 'COMPLETED').length})`;
     //game card
     grid.innerHTML = entriesWithRatings.map(entry => renderCard(entry)).join('');
+    renderPagination();
     finishProgress();
 }
 
@@ -495,4 +503,26 @@ async function deleteReview(id) {
     showToast('Review deleted', 'success');
     loadReviews(selectedGameId);
     loadGames();
+}
+
+function renderPagination() {
+    let container = document.getElementById('pagination');
+    if (!container) return;
+
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    container.innerHTML = `
+        <button class="filter-btn ${currentPage === 0 ? 'disabled' : ''}"
+            onclick="loadGames(${currentPage - 1})"
+            ${currentPage === 0 ? 'disabled' : ''}>← Prev</button>
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+            ${currentPage + 1} / ${totalPages}
+        </span>
+        <button class="filter-btn ${currentPage >= totalPages - 1 ? 'disabled' : ''}"
+            onclick="loadGames(${currentPage + 1})"
+            ${currentPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
+    `;
 }

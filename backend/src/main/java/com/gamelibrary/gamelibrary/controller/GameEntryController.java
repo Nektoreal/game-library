@@ -4,10 +4,11 @@ import com.gamelibrary.gamelibrary.entity.GameEntry;
 import com.gamelibrary.gamelibrary.service.GameEntryService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -19,9 +20,12 @@ public class GameEntryController {
   private final GameEntryService gameEntryService;
 
   @GetMapping //handless HTTP requests "GET /api/gameEntries"
-  public List<GameEntry> getAllGameEntries(Authentication authentication){ 
+  public Page<GameEntry> getAllGameEntries(
+    Authentication authentication,
+  @RequestParam(defaultValue = "0") int page,
+  @RequestParam(defaultValue = "20") int size) { 
     String username = authentication.getName();
-    return gameEntryService.getEntriesByUsername(username);
+    return gameEntryService.getEntriesByUsername(username, PageRequest.of(page, size));
   }
 
   @PostMapping //handless HTTP requests "POST /api/gameEntries"

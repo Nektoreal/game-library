@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,7 +43,7 @@ public class UserService {
   }
 
   public UserStatsDto getUserStats(String username) {
-    List<GameEntry> entries = gameEntryRepository.findByUserUsername(username);
+    List<GameEntry> entries = gameEntryRepository.findByUserUsername(username, Pageable.unpaged()).getContent();
     
     long playing = entries.stream().filter(e -> e.getStatus() == GameStatus.PLAYING).count();
     long planned = entries.stream().filter(e -> e.getStatus() == GameStatus.PLANNED).count();

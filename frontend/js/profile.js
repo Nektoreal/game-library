@@ -10,7 +10,7 @@ async function loadProfile() {
         document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
 
         const entriesRes = await fetchWithAuth(`${API}/api/entries`);
-        const entries = await entriesRes.json();
+        const entries = (await entriesRes.json()).content;
 
         const totalSeconds = entries.reduce((sum, e) => sum + (e.playtime || 0), 0)
         const totalHours = Math.floor(totalSeconds / 3600)

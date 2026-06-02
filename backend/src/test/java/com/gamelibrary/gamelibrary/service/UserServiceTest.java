@@ -11,10 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.ArgumentMatchers;
+import org.springframework.data.domain.Pageable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.List;
 
@@ -62,8 +67,8 @@ class UserServiceTest {
     GameEntry entry2 = new GameEntry();
     entry2.setStatus(GameStatus.COMPLETED);
 
-    when(gameEntryRepository.findByUserUsername("testUser"))
-        .thenReturn(List.of(entry1,entry2));
+    when(gameEntryRepository.findByUserUsername(eq("testUser"), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(List.of(entry1, entry2)));
     
     //Act
     UserStatsDto result = userService.getUserStats("testUser");

@@ -9,8 +9,9 @@ import com.gamelibrary.gamelibrary.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,8 +66,8 @@ public class GameEntryService {
     gameEntryRepository.deleteById(id);
   }
 
-  public List<GameEntry> getEntriesByUsername(String username) {
-    return gameEntryRepository.findByUserUsername(username);
+  public Page<GameEntry> getEntriesByUsername(String username, Pageable pageable) {
+      return gameEntryRepository.findByUserUsername(username, pageable);
   }
 
   public GameEntry updateStatus(String id, String status) {

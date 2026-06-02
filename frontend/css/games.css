@@ -191,12 +191,24 @@
 .game-meta {
     font-size: 10px; color: var(--text-muted);
     letter-spacing: 0.05em; text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .game-footer {
     display: flex; align-items: center; justify-content: space-between;
     margin-top: auto;
 }
 .game-score-row { display: flex; align-items: center; gap: 6px;}
+
+.game-playtime {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+
+}
+
 .star {font-size: 11px; color: #d4a853; cursor: pointer;}
 .score-val {
     font-family: var(--font-mono); font-size: 12px; font-weight: 500;

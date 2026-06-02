@@ -12,6 +12,12 @@ async function loadProfile() {
         const entriesRes = await fetchWithAuth(`${API}/api/entries`);
         const entries = await entriesRes.json();
 
+        const totalSeconds = entries.reduce((sum, e) => sum + (e.playtime || 0), 0)
+        const totalHours = Math.floor(totalSeconds / 3600)
+        const totalMinutes = Math.floor((totalSeconds % 3600) / 60)
+        document.getElementById('total-hours').textContent = totalHours
+        document.getElementById('total-minutes').textContent = totalMinutes
+
         const statsRes = await fetchWithAuth(`${API}/api/users/me/stats`);
         const stats = await statsRes.json();
 

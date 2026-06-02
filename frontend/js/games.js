@@ -13,6 +13,14 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+function formatPlaytime(seconds) {
+    if (!seconds || seconds === 0) return null
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    if (hours > 0) return `${hours}h ${minutes}m`
+    return `${minutes}m`
+}
+
 function escapeHtml(str) {
     return (str || '')
         .replace(/&/g, '&amp;')
@@ -36,7 +44,10 @@ function renderCard(entry) {
                 </div>`}
                 <div class="game-info">
                     <div class="game-title">${entry.game.title}</div>
-                    <div class="game-meta">${entry.game.genre} · ${entry.game.platform} · ${entry.game.releaseYear}</div>
+                    <div class="game-meta">
+                        <span>${entry.game.genre} · ${entry.game.platform} · ${entry.game.releaseYear}</span>
+                        ${formatPlaytime(entry.playtime) ? `<span class="game-playtime">⏱ ${formatPlaytime(entry.playtime)}</span>` : ''}
+                    </div>
                     <div class="game-footer">
                         <span class="status-badge ${entry.status}">${entry.status}</span>
                         <div class="game-score-row">

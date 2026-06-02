@@ -298,8 +298,8 @@ async function searchGames(query) {
 
     results.style.display = 'block';
     results.innerHTML = data.map(game => `
-            <div onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})" style="padding: 10px; cursor: pointer;">
-                ${game.name}
+            <div class="search-item" onclick="selectGame(${JSON.stringify(game).replace(/"/g, '&quot;')})">
+                ${escapeHtml(game.name)}
             </div>
         `).join('');
 }

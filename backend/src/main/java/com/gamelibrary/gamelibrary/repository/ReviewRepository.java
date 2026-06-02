@@ -13,6 +13,10 @@ public interface ReviewRepository extends JpaRepository<Review, String>{
 
   List<Review> findByGameId(String gameId);
   List<Review> findByUserUsername(String username);
+  
   @Transactional
   void deleteByGameId(String gameId);
+
+  @Transactional
+  void deleteByGameIdAndUserUsername(String gameId, String username);
 }

@@ -26,7 +26,7 @@ public class GameController {
   }
 
   @DeleteMapping("/{id}") //handless HTTP requests "DELETE /api/games/{id}"
-  public void deleteGame(@RequestBody String id){ //take the {id} from the URL and pass it into the method
+  public void deleteGame(@PathVariable String id){ //take the {id} from the URL and pass it into the method
     gameService.deleteGame(id);
   }
 

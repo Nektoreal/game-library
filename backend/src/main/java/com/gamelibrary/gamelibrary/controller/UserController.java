@@ -33,7 +33,7 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}") //handless HTTP requests "DELETE /api/users/{id}"
-  public void deleteUser(@RequestBody String id){ //take the {id} from the URL and pass it into the method
+  public void deleteUser(@PathVariable String id){ //take the {id} from the URL and pass it into the method
     userService.deleteUser(id); 
   }
 

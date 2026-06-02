@@ -55,13 +55,13 @@ public class GameEntryService {
   }
 
   public void deleteGameEntry(String id){
-
     GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
-
-    //Delete all review
-    reviewRepository.deleteByGameId(entry.getGame().getId());
-
-    //and delete 'this' review
+    // Delete only THIS user's review for this game
+    reviewRepository.deleteByGameIdAndUserUsername(
+      entry.getGame().getId(),
+      entry.getUser().getUsername()
+    );
+    // Delete the entry itself
     gameEntryRepository.deleteById(id);
   }
 

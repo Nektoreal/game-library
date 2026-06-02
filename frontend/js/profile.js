@@ -26,7 +26,7 @@ async function loadProfile() {
         entries.forEach(e => {
             if (e.completedAt) {
                 completedMap[e.game.id] = new Date(e.completedAt)
-                    .toLocaleDateString('en-US', {month:'short', day:'numeric', year: 'numeric'});
+                    .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             }
         });
 
@@ -87,19 +87,26 @@ async function loadProfile() {
         // Recent reviews
         const lastReviews = reviews.slice(-4).reverse();
         document.getElementById('last-reviews').innerHTML = lastReviews.length > 0
-            ? lastReviews.map((r, i) => `
-                <div class="recent-item">
-                    <div class="recent-num">0${i + 1}</div>
-                    <div>
-                        <div class="recent-title">${r.game?.title || 'Unknown'}</div>
-                        <div class="recent-meta">${r.game?.genre || ''} · ${r.game?.platform || ''} · ${r.game?.releaseYear || ''}</div>
+            ? lastReviews.map((r, i) => {
+                const text = escapeHtml(r.text || '');
+                const isLong = text.length > 180;
+                return `
+                    <div class="recent-item">
+                        <div class="recent-num">0${i + 1}</div>
+                        <div class="recent-body">
+                            <div class="recent-title">${r.game?.title || 'Unknown'}</div>
+                            <div class="recent-meta">${r.game?.genre || ''} · ${r.game?.platform || ''} · ${r.game?.releaseYear || ''}</div>
+                            ${text ? `
+                            <div class="recent-review-text${isLong ? ' recent-review-collapsed' : ''}" id="rtext-${i}">${text}</div>
+                            ${isLong ? `<button class="recent-expand-btn" onclick="toggleReview(this,'rtext-${i}')">Show more</button>` : ''}
+                            ` : ''}
+                        </div>
+                        <div class="recent-right">
+                            <div class="recent-score">${r.rating}/10</div>
+                            <div class="recent-completed">${completedMap[r.game?.id] ? 'Completed ' + completedMap[r.game?.id] : '—'}</div>
+                        </div>
                     </div>
-                    <div class="recent-right">
-                        <div class="recent-score">${r.rating}/10</div>
-                        <div class="recent-completed">${completedMap[r.game?.id] ? 'Completed ' + completedMap[r.game?.id] : '—'}</div>
-                    </div>
-                </div>
-            `).join('')
+                    `}).join('')
             : '<div class="no-reviews">No reviews yet</div>';
 
         finishProgress();
@@ -110,4 +117,20 @@ async function loadProfile() {
             '<div class="empty">Failed to load profile. Try again later.</div>';
     }
 }
+
+function toggleReview(btn, id) {
+    const el = document.getElementById(id);
+    const collapsed = el.classList.toggle('recent-review-collapsed');
+    btn.textContent = collapsed ? 'Show more' : 'Show less';
+}
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 loadProfile();

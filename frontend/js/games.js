@@ -13,6 +13,15 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+function escapeHtml(str) {
+    return (str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function renderCard(entry) {
     const entryJson = JSON.stringify(entry).replace(/"/g, '&quot;');
     return `<div class="game-card" onclick="openSidebar(${entryJson})">
@@ -399,11 +408,11 @@ async function loadReviews(gameId) {
         <div class="review-existing-header">
             <span class="review-score-display">${myReview.rating}<span class="review-score-max">/10</span></span>
             <div class="review-actions">
-                <button onclick="editReview('${myReview.id}', ${myReview.rating}, '${myReview.text.replace(/'/g, "\\'").replace(/\r?\n/g, "\\n")}')" class="btn-review-action">Edit</button>
+                <button id="btn-edit-review" class="btn-review-action">Edit</button>
                 <button onclick="deleteReview('${myReview.id}')" class="btn-review-delete">Delete</button>
             </div>
         </div>
-        <p class="review-text-display">${myReview.text}</p>
+        <p class="review-text-display">${escapeHtml(myReview.text)}</p>
         <span class="review-date">${new Date(myReview.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
     </div>
     </div>`;
@@ -426,11 +435,16 @@ async function loadReviews(gameId) {
                     <span class="review-other-user">${review.user.username}</span>
                     <span class="review-score-display review-score-other">${review.rating}<span class="review-score-max">/10</span></span>
                 </div>
-                <p class="review-text-display">${review.text}</p>
+                <p class="review-text-display">${escapeHtml(review.text)}</p>
             </div>`).join('');
     }
 
     container.innerHTML = html;
+
+    const editBtn = container.querySelector('#btn-edit-review');
+    if (editBtn) {
+        editBtn.addEventListener('click', () => editReview(myReview.id, myReview.rating, myReview.text));
+    }
 }
 
 function editReview(id, rating, text) {
@@ -442,7 +456,7 @@ function editReview(id, rating, text) {
             <div class="review-stars">
                 ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<span class="review-star" data-value="${n}" onclick="setRating(${n})">${n}</span>`).join('')}
             </div>
-            <textarea id="review-text" class="review-textarea review-textarea-edit">${text.replace(/\\n/g, '\n')}</textarea>
+            <textarea id="review-text" class="review-textarea review-textarea-edit">${escapeHtml(text)}</textarea>
             <div class="review-actions">
                 <button onclick="saveEditReview('${id}')" class="btn-save-review review-btn-flex">Save</button>
                 <button onclick="loadReviews('${selectedGameId}')" class="btn-review-action review-btn-flex">Cancel</button>

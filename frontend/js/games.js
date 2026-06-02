@@ -9,6 +9,8 @@ let selectedCoverUrl = '';
 let currentPage = 0;
 let totalPages = 0;
 
+let currentFilter = 'ALL';
+
 //Close sidebar with "ESC" - key
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -110,11 +112,19 @@ async function loadGames(page = 0) {
     document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status === 'COMPLETED').length})`;
     //game card
     grid.innerHTML = entriesWithRatings.map(entry => renderCard(entry)).join('');
+
+    if (currentFilter !== 'ALL') {
+        filterGames(currentFilter);
+    } else {
+        document.getElementById('filter-ALL').classList.add('active');
+    }
+
     renderPagination();
     finishProgress();
 }
 
 function filterGames(status) {
+    currentFilter = status;
     const filtered = status === 'ALL' ? allEntries : allEntries.filter(entry => entry.status === status);
     currentEntries = filtered;
 

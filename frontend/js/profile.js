@@ -139,4 +139,145 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
-loadProfile();
+async function loadPublicProfile(username) {
+    startProgress();
+    try {
+        const userRes = await fetch(`${API}/api/public/${username}`);
+        if(!userRes.ok) {
+            document.querySelector('.container').innerHTML =
+                '<div class="empty">User not found.</div>';
+            return;
+        }
+        const user = await userRes.json();
+
+        //user site-headers
+        document.getElementById('profile-username').textContent = user.username;
+        document.getElementById('profile-display-name').textContent = user.username;
+        document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
+
+        //hide private btn
+        document.querySelector('.nav-right').innerHTML = `
+            <button onclick="window.location.href='games.html?user=${username}'">Library</button>
+            <button onclick="window.location.href='profile.html'">← Back</button>
+        `;
+        
+        //load entries and reviews
+        const entriesRes = await fetch(`${API}/api/public/${username}/entries`);
+        const entries = (await entriesRes.json()).content;
+
+        const reviewsRes = await fetch(`${API}/api/public/${username}/reviews`);
+        const reviews = await reviewsRes.json();
+
+        //calculated statistic 
+        document.getElementById('count-total').textContent = entries.length;
+        document.getElementById('count-completed').textContent = entries.filter(e => e.status === 'COMPLETED').length;
+        document.getElementById('count-playing').textContent = entries.filter(e => e.status === 'PLAYING').length;
+        document.getElementById('count-planned').textContent = entries.filter(e => e.status === 'PLANNED').length;
+        document.getElementById('count-dropped').textContent = entries.filter(e => e.status === 'DROPPED').length;
+
+        //Playtime 
+        const totalSeconds = entries.reduce((sum, e) => sum + (e.playtime || 0), 0);
+        document.getElementById('total-hours').textContent = Math.floor(totalSeconds / 3600);
+        document.getElementById('total-minutes').textContent = Math.floor((totalSeconds % 3600) / 60);
+
+        //Avg rating
+        const avgRating = reviews.length > 0
+            ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+            : null;
+        document.getElementById('avg-rating').textContent = avgRating || '—';
+
+        //Top genre
+        const genreCount = {};
+        entries.forEach(e => {
+            const genre = e.game?.genre;
+            if (genre) genreCount[genre] = (genreCount[genre] || 0) + 1;
+        });
+        const topGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]).slice(0, 3);
+        const maxCount = topGenres[0]?.[1] || 1;
+        document.getElementById('top-genre').textContent = topGenres[0]?.[0] || '—';
+        document.getElementById('top-genres').innerHTML = topGenres.length > 0 ? topGenres.map(([genre, count]) => `
+            <div class="genre-row">
+                <div class="genre-name">${genre}</div>
+                <div class="genre-bar-bg">
+                    <div class="genre-bar-fill" style="width: ${Math.round((count / maxCount) * 100)}%"></div>
+                </div>
+                <div class="genre-count">${Math.round((count / entries.length) * 100)}%</div>
+            </div>
+        `).join('') : '<div class="empty">No data yet</div>';
+
+        //Completion rate
+        const rate = entries.length > 0
+            ? Math.round((entries.filter(e => e.status === 'COMPLETED').length / entries.length) * 100)
+            : 0;
+        document.getElementById('completion-rate').textContent = rate;
+        document.getElementById('completion-sub').textContent =
+            `${entries.filter(e => e.status === 'COMPLETED').length} finished out of ${entries.length} tracked.`;
+
+        //last reviews
+        const lastReviews = reviews.slice(-4).reverse();
+        document.getElementById('last-reviews').innerHTML = lastReviews.length > 0
+            ? lastReviews.map((r, i) => {
+                const text = escapeHtml(r.text || '');
+                return `
+                    <div class="recent-item">
+                        <div class="recent-num">0${i + 1}</div>
+                        <div class="recent-body">
+                            <div class="recent-title">${r.game?.title || 'Unknown'}</div>
+                            <div class="recent-meta">${r.game?.genre || ''} · ${r.game?.platform || ''}</div>
+                            ${text ? `<div class="recent-review-text">${text}</div>` : ''}
+                        </div>
+                        <div class="recent-right">
+                            <div class="recent-score">${r.rating}/10</div>
+                        </div>
+                    </div>`;
+            }).join('')
+            : '<div class="no-reviews">No reviews yet</div>';
+        finishProgress();
+    } catch (e) {
+        console.error(e);
+        finishProgress();
+    }
+}
+
+async function searchUsers(query) {
+    const results = document.getElementById('user-search-results');
+    if (query.length < 2) {
+        results.style.display = 'none';
+        return;
+    }
+
+    const res = await fetch(`${API}/api/public/search?q=${encodeURIComponent(query)}`);
+    const users = await res.json();
+
+    if(users.length === 0) {
+        results.style.display = 'none';
+        return;
+    }
+
+    results.style.display = 'block';
+    results.innerHTML = users.map(u => `
+        <div style="padding: 10px 16px; cursor: pointer; 
+                    font-family: var(--font-mono); font-size: 12px;
+                    color: var(--text);"
+             onmouseover="this.style.background='var(--surface2)'"
+             onmouseout="this.style.background=''"
+             onclick="window.location.href='profile.html?user=${u.username}'">
+            ${u.username}
+        </div>
+    `).join('');
+}
+
+document.addEventListener('click', function(e) {
+    const results = document.getElementById('user-search-results');
+    const input = document.getElementById('user-search');
+    if (results && input && !input.contains(e.target) && !results.contains(e.target)) {
+        results.style.display = 'none';
+    }
+})
+
+const viewingUsername = new URLSearchParams(window.location.search).get('user');
+if (viewingUsername) {
+    loadPublicProfile(viewingUsername);
+} else {
+    loadProfile();
+}

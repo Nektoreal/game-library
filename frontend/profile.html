@@ -21,6 +21,21 @@
     <nav>
         <a class="nav-logo" href="#">game<span>.</span>library</a>
         <div class="nav-links">
+            <div style="position: relative;">
+                <input 
+                    type="text" 
+                    id="user-search" 
+                    class="library-search" 
+                    placeholder="Search users…"
+                    oninput="searchUsers(this.value)"
+                    autocomplete="off">
+                <div id="user-search-results" style="
+                    position: absolute; top: 100%; right: 0;
+                    background: var(--surface);
+                    border: 1px solid var(--border-strong);
+                    min-width: 200px; z-index: 200; display: none;">
+                </div>
+        </div>
             <a href="profile.html" class="active">Profile</a>
         </div>
         <div class="nav-right">

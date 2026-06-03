@@ -2,8 +2,6 @@ package com.gamelibrary.gamelibrary.entity;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -33,6 +31,5 @@ public class Review {
   private String text;
 
   @Column(updatable = false)
-  @CreatedDate
   private LocalDateTime createdAt;
 }

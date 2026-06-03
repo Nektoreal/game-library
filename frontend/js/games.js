@@ -139,7 +139,8 @@ function filterGames(status) {
         return;
     }
 
-    grid.innerHTML = filtered.map(entry => renderCard(entry)).join('');
+    const renderer = publicUser ? renderPublicCard : renderCard;
+    grid.innerHTML = filtered.map(entry => renderer(entry)).join('');
 }
 
 async function addGame() {
@@ -372,19 +373,27 @@ function showManualForm() {
     const form = document.getElementById('manual-form');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
-fetchWithAuth(`${API}/api/users/me`)
-    .then(r => r.json())
-    .then(user => {
-        currentUsername = user.username;
-        loadGames();
-    });
+
+const publicUser = new URLSearchParams(window.location.search).get('user');
+
+if (publicUser) {
+    currentUsername = null;
+    loadPublicGames(publicUser);
+} else {
+    fetchWithAuth(`${API}/api/users/me`)
+        .then(r => r.json())
+        .then(user => {
+            currentUsername = user.username;
+            loadGames();
+        });
+}
 
 
 document.addEventListener('click', function (e) {
     const searchResult = document.getElementById('search-result');
     const gameTitle = document.getElementById('gameTitle');
 
-    if (!gameTitle.contains(e.target) && !searchResult.contains(e.target)) {
+    if (gameTitle && searchResult && !gameTitle.contains(e.target) && !searchResult.contains(e.target)) {
         searchResult.style.display = 'none';
     }
 });
@@ -406,7 +415,8 @@ function searchLibrary(query) {
         return;
     }
 
-    grid.innerHTML = filtered.map(entry => renderCard(entry)).join('');
+    const renderer = publicUser ? renderPublicCard : renderCard;
+    grid.innerHTML = filtered.map(entry => renderer(entry)).join('');
 }
 
 function sortGames(by) {
@@ -416,8 +426,8 @@ function sortGames(by) {
         if (by === 'status') return a.status.localeCompare(b.status);
     });
 
-    const grid = document.getElementById('gamesGrid');
-    grid.innerHTML = sorted.map(entry => renderCard(entry)).join('');
+    const renderer = publicUser ? renderPublicCard : renderCard;
+    grid.innerHTML = sorted.map(entry => renderer(entry)).join('');
 }
 
 async function loadReviews(gameId) {
@@ -535,4 +545,89 @@ function renderPagination() {
             onclick="loadGames(${currentPage + 1})"
             ${currentPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
     `;
+}
+
+async function loadPublicGames(username) {
+    // hide private button
+    document.querySelector('.add-game').style.display = 'none';
+    document.querySelector('.nav-right').innerHTML = `
+        <button onclick="window.location.href='profile.html?user=${username}'">← Profile</button>
+    `;
+
+    // Change navbar header
+    document.querySelector('.nav-logo').innerHTML = 
+        `game<span>.</span>${username}`;
+
+    startProgress();
+
+    const res = await fetch(`${API}/api/public/${username}/entries?page=0&size=100`);
+    if (!res.ok) {
+        document.getElementById('gamesGrid').innerHTML = 
+            '<div class="empty">User not found.</div>';
+        return;
+    }
+
+    const data = await res.json();
+    const entries = data.content;
+
+    if (entries.length === 0) {
+        document.getElementById('gamesGrid').innerHTML = 
+            '<div class="empty">No games in library.</div>';
+        finishProgress();
+        return;
+    }
+
+    // load rating for each game
+    const revRes = await fetch(`${API}/api/public/${username}/reviews`);
+    const allReviews = await revRes.json();
+
+    const entriesWithRatings = entries.map(entry => {
+        const gameReviews = allReviews.filter(r => r.game.id === entry.game.id);
+        const avg = gameReviews.length > 0
+            ? (gameReviews.reduce((sum, r) => sum + r.rating, 0) / gameReviews.length).toFixed(1)
+            : null;
+        return { ...entry, avgRating: avg };
+    });
+
+    allEntries = entriesWithRatings;
+    currentEntries = entriesWithRatings;
+
+    // update filter
+    document.getElementById('filter-ALL').textContent = `All (${entriesWithRatings.length})`;
+    document.getElementById('filter-PLAYING').textContent = `Playing (${entriesWithRatings.filter(e => e.status === 'PLAYING').length})`;
+    document.getElementById('filter-PLANNED').textContent = `Planned (${entriesWithRatings.filter(e => e.status === 'PLANNED').length})`;
+    document.getElementById('filter-DROPPED').textContent = `Dropped (${entriesWithRatings.filter(e => e.status === 'DROPPED').length})`;
+    document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status === 'COMPLETED').length})`;
+
+    document.getElementById('gamesGrid').innerHTML = 
+        entriesWithRatings.map(entry => renderPublicCard(entry)).join('');
+
+    finishProgress();
+}
+
+function renderPublicCard(entry) {
+    return `<div class="game-card">
+        ${entry.game.coverUrl ? `
+        <div class="game-cover">
+            <img src="${entry.game.coverUrl}" alt="${entry.game.title}">
+        </div>` : `
+        <div class="game-cover">
+            <div class="game-cover-placeholder">
+                <span class="no-cover-label">NO COVER</span>
+            </div>
+        </div>`}
+        <div class="game-info">
+            <div class="game-title">${entry.game.title}</div>
+            <div class="game-meta">
+                <span>${entry.game.genre} · ${entry.game.platform} · ${entry.game.releaseYear}</span>
+                ${formatPlaytime(entry.playtime) ? `<span class="game-playtime">⏱ ${formatPlaytime(entry.playtime)}</span>` : ''}
+            </div>
+            <div class="game-footer">
+                <span class="status-badge ${entry.status}">${entry.status}</span>
+                <div class="game-score-row">
+                    ${entry.avgRating ? `<span class="score-val">${parseFloat(entry.avgRating)}/10</span>` : ''}
+                </div>
+            </div>
+        </div>
+    </div>`;
 }

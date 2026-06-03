@@ -52,4 +52,8 @@ public class UserService {
     
     return new UserStatsDto((long) entries.size(), playing, planned, completed, dropped, 0.0);
   }
+
+  public List<User> searchUsers(String query) {
+    return userRepository.findByUsernameContainingIgnoreCase(query);
+  }
 }

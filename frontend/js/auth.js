@@ -1,10 +1,13 @@
 const API = 'http://127.0.0.1:8080';
 const token = localStorage.getItem('token');
 
-if (!token) window.location.href = 'index.html';
+const urlParams = new URLSearchParams(window.location.search);
+const isPublicPage = urlParams.get('user') !== null;
+
+if (!token && !isPublicPage) window.location.href = 'index.html';
 
 async function fetchWithAuth(url, options = {}) {
-    return fetch(url, {
+    const res = await fetch(url, {
         ...options,
         headers: {
             'Content-Type': 'application/json',
@@ -12,6 +15,14 @@ async function fetchWithAuth(url, options = {}) {
             ...options.headers
         }
     });
+
+    if (res.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    return res;
 }
 
 function logout() {

@@ -248,8 +248,8 @@ function openSidebar(entry) {
 function closeSidebar() {
     document.getElementById('sidebar').style.transform = 'translateX(100%)';
     document.getElementById('overlay').style.display = 'none';
+    document.getElementById('status-select').style.display = '';
     selectedGameId = null;
-
     document.body.style.overflow = '';
 }
 
@@ -475,6 +475,7 @@ async function loadReviews(gameId) {
                     <span class="review-score-display review-score-other">${review.rating}<span class="review-score-max">/10</span></span>
                 </div>
                 <p class="review-text-display">${escapeHtml(review.text)}</p>
+                <span class="review-date">${new Date(review.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
             </div>`).join('');
     }
 
@@ -606,7 +607,8 @@ async function loadPublicGames(username) {
 }
 
 function renderPublicCard(entry) {
-    return `<div class="game-card">
+    const entryJson = JSON.stringify(entry).replace(/"/g, '&quot;');
+    return `<div class="game-card" onclick="openPublicSidebar(${entryJson})">
         ${entry.game.coverUrl ? `
         <div class="game-cover">
             <img src="${entry.game.coverUrl}" alt="${entry.game.title}">
@@ -630,4 +632,50 @@ function renderPublicCard(entry) {
             </div>
         </div>
     </div>`;
+}
+
+async function openPublicSidebar(entry) {
+    const banner = document.getElementById('sidebar-banner');
+    if (entry.game.coverUrl) {
+        banner.style.backgroundImage = `url('${entry.game.coverUrl}')`;
+    } else {
+        banner.style.backgroundImage = 'none';
+    }
+
+    document.getElementById('sidebar-title').textContent = entry.game.title;
+    document.getElementById('sidebar-meta').textContent =
+        `${entry.game.genre} • ${entry.game.platform} • ${entry.game.releaseYear}`;
+    document.getElementById('sidebar-status').innerHTML =
+        `<span class="status-badge ${entry.status}">${entry.status}</span>`;
+
+    // Скрываем select статуса
+    document.getElementById('status-select').style.display = 'none';
+
+    // Грузим рецензии через публичный эндпоинт
+    const res = await fetch(`${API}/api/public/${publicUser}/reviews`);
+    const reviews = await res.json();
+    console.log('entry.game.id:', entry.game.id);
+    console.log('reviews game ids:', reviews.map(r => r.game.id));
+    const gameReviews = reviews.filter(r => r.game.id === entry.game.id);
+
+    const container = document.getElementById('sidebar-reviews');
+
+    if (gameReviews.length === 0) {
+        container.innerHTML = '<div style="padding: 0 24px; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">No reviews yet</div>';
+    } else {
+        container.innerHTML = gameReviews.map(r => `
+            <div class="review-other">
+                <div class="review-other-header">
+                    <span class="review-other-user">${r.user.username}</span>
+                    <span class="review-score-display review-score-other">${r.rating}<span class="review-score-max">/10</span></span>
+                </div>
+                <p class="review-text-display">${escapeHtml(r.text)}</p>
+                ${r.createdAt ? `<span class="review-date">${new Date(r.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('sidebar').style.transform = 'translateX(0)';
+    document.getElementById('overlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }

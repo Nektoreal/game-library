@@ -21,24 +21,22 @@
     <nav>
         <a class="nav-logo" href="#">game<span>.</span>library</a>
         <div class="nav-links">
-            <div style="position: relative;">
-                <input 
-                    type="text" 
-                    id="user-search" 
-                    class="library-search" 
-                    placeholder="Search users…"
-                    oninput="searchUsers(this.value)"
-                    autocomplete="off">
-                <div id="user-search-results" style="
-                    position: absolute; top: 100%; right: 0;
-                    background: var(--surface);
-                    border: 1px solid var(--border-strong);
-                    min-width: 200px; z-index: 200; display: none;">
-                </div>
-        </div>
             <a href="profile.html" class="active">Profile</a>
         </div>
         <div class="nav-right">
+            <div style="position: relative; display: flex; align-items: center;">
+                <div id="user-search-wrap" class="search-wrap">
+                    <input 
+                        type="text" 
+                        id="user-search" 
+                        class="library-search" 
+                        placeholder="Search users…"
+                        oninput="searchUsers(this.value)"
+                        autocomplete="off">
+                    <div id="user-search-results" class="search-results"></div>
+                </div>
+                <button id="search-toggle" class="search-toggle" onclick="toggleSearch()">⌕</button>
+            </div>
             <button onclick="window.location.href='games.html'">Library</button>
             <button onclick="logout()">Logout</button>
         </div>
@@ -56,16 +54,7 @@
                 <div class="profile-handle-label">@<span id="profile-username">username</span></div>
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <div class="profile-name" id="profile-display-name">username</div>
-                    <button id="btn-edit-displayname" onclick="editDisplayName()" style="
-                        font-family: var(--font-mono); font-size: 10px; font-weight: 500;
-                        letter-spacing: 0.08em; text-transform: uppercase;
-                        background: transparent; border: 1px solid var(--border-strong);
-                        color: var(--text-muted); padding: 4px 10px; cursor: pointer;
-                        transition: color 0.15s, border-color 0.15s;"
-                        onmouseover="this.style.color='var(--accent)'; this.style.borderColor='rgba(200,240,96,0.3)'"
-                        onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--border-strong)'">
-                        Edit
-                    </button>
+                    <button id="btn-edit-displayname" class="btn-edit-name" onclick="editDisplayName()">Edit</button>
                 </div>
                 <div class="profile-email" id="profile-email"></div>
                 <div class="profile-stats">

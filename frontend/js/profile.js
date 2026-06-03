@@ -315,10 +315,18 @@ async function searchUsers(query) {
 document.addEventListener('click', function(e) {
     const results = document.getElementById('user-search-results');
     const input = document.getElementById('user-search');
-    if (results && input && !input.contains(e.target) && !results.contains(e.target)) {
+    const toggle = document.getElementById('search-toggle');
+    const wrap = document.getElementById('user-search-wrap');
+
+    if (results && input && toggle && wrap &&
+        !input.contains(e.target) && 
+        !results.contains(e.target) && 
+        !toggle.contains(e.target)) {
         results.style.display = 'none';
+        wrap.classList.remove('visible');
+        input.value = '';
     }
-})
+});
 
 const viewingUsername = new URLSearchParams(window.location.search).get('user');
 
@@ -326,4 +334,19 @@ if (viewingUsername) {
     loadPublicProfile(viewingUsername);
 } else {
     loadProfile();
+}
+
+function toggleSearch() {
+    const wrap = document.getElementById('user-search-wrap');
+    const input = document.getElementById('user-search');
+    const isVisible = wrap.classList.contains('visible');
+
+    if (isVisible) {
+        wrap.classList.remove('visible');
+        document.getElementById('user-search-results').style.display = 'none';
+        input.value = '';
+    } else {
+        wrap.classList.add('visible');
+        setTimeout(() => input.focus(), 200);
+    }
 }

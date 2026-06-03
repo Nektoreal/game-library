@@ -326,7 +326,7 @@ async function searchGames(query) {
 function selectGame(game) {
     const rawUrl = game.cover?.url || '';
     selectedCoverUrl = rawUrl
-        ? 'https:' + rawUrl.replace('t_thumb', 't_screenshot_big')
+        ? 'https:' + rawUrl.replace('t_thumb', 't_1080p')
         : '';
 
     document.getElementById('gameTitle').value = game.name;
@@ -648,10 +648,10 @@ async function openPublicSidebar(entry) {
     document.getElementById('sidebar-status').innerHTML =
         `<span class="status-badge ${entry.status}">${entry.status}</span>`;
 
-    // Скрываем select статуса
+    // hide select status
     document.getElementById('status-select').style.display = 'none';
 
-    // Грузим рецензии через публичный эндпоинт
+    // load review with public endpoint
     const res = await fetch(`${API}/api/public/${publicUser}/reviews`);
     const reviews = await res.json();
     console.log('entry.game.id:', entry.game.id);

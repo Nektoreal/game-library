@@ -5,7 +5,7 @@ async function loadProfile() {
         const user = await userRes.json();
 
         document.getElementById('profile-username').textContent = user.username;
-        document.getElementById('profile-display-name').textContent = user.username;
+        document.getElementById('profile-display-name').textContent = user.displayName || user.username;
         //document.getElementById('profile-email').textContent = user.email;
         document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
 
@@ -139,6 +139,48 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
+function editDisplayName() {
+    const nameEl = document.getElementById('profile-display-name');
+    const btn = document.getElementById('btn-edit-displayname');
+    const current = nameEl.textContent;
+
+    nameEl.innerHTML = `
+        <input type="text" id="displayname-input" value="${escapeHtml(current)}" 
+            style="font-family: var(--font-mono); font-size: 22px; font-weight: 400;
+                   background: var(--surface2); border: 1px solid rgba(200,240,96,0.25);
+                   color: var(--text); padding: 4px 8px; outline: none; width: 100%;"
+            maxlength="30">
+    `;
+    btn.textContent = 'Save';
+    btn.onclick = saveDisplayName;
+}
+
+async function saveDisplayName() {
+    const input = document.getElementById('displayname-input');
+    const newName = input.value.trim();
+    const btn = document.getElementById('btn-edit-displayname');
+
+    if (!newName) {
+        showToast('Display name cannot be empty', 'error');
+        return;
+    }
+
+    const res = await fetchWithAuth(`${API}/api/users/me/displayname`, {
+        method: 'PUT',
+        body: JSON.stringify({ displayName: newName })
+    });
+
+    if (res.ok) {
+        const user = await res.json();
+        document.getElementById('profile-display-name').textContent = user.displayName || user.username;
+        btn.textContent = 'Edit';
+        btn.onclick = editDisplayName;
+        showToast('Display name updated!', 'success');
+    } else {
+        showToast('Error updating display name', 'error');
+    }
+}
+
 async function loadPublicProfile(username) {
     startProgress();
     try {
@@ -152,7 +194,7 @@ async function loadPublicProfile(username) {
 
         //user site-headers
         document.getElementById('profile-username').textContent = user.username;
-        document.getElementById('profile-display-name').textContent = user.username;
+        document.getElementById('profile-display-name').textContent = user.displayName || user.username;
         document.getElementById('profile-avatar').textContent = user.username[0].toUpperCase();
 
         //hide private btn
@@ -160,6 +202,9 @@ async function loadPublicProfile(username) {
             <button onclick="window.location.href='games.html?user=${username}'">Library</button>
             <button onclick="window.location.href='profile.html'">← Back</button>
         `;
+
+        const editBtn = document.getElementById('btn-edit-displayname');
+        if (editBtn) editBtn.style.display = 'none';
         
         //load entries and reviews
         const entriesRes = await fetch(`${API}/api/public/${username}/entries`);

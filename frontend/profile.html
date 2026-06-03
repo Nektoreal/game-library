@@ -54,7 +54,19 @@
             </div>
             <div class="profile-info">
                 <div class="profile-handle-label">@<span id="profile-username">username</span></div>
-                <div class="profile-name" id="profile-display-name">username</div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="profile-name" id="profile-display-name">username</div>
+                    <button id="btn-edit-displayname" onclick="editDisplayName()" style="
+                        font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+                        letter-spacing: 0.08em; text-transform: uppercase;
+                        background: transparent; border: 1px solid var(--border-strong);
+                        color: var(--text-muted); padding: 4px 10px; cursor: pointer;
+                        transition: color 0.15s, border-color 0.15s;"
+                        onmouseover="this.style.color='var(--accent)'; this.style.borderColor='rgba(200,240,96,0.3)'"
+                        onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--border-strong)'">
+                        Edit
+                    </button>
+                </div>
                 <div class="profile-email" id="profile-email"></div>
                 <div class="profile-stats">
                     <div class="pstat">

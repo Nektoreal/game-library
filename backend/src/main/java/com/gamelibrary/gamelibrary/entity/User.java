@@ -30,6 +30,9 @@ public class User implements UserDetails{
   @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
   private String username;
 
+  @Size(max = 30, message = "Display name must be at most 30 characters")
+  private String displayName;
+
   @NotBlank(message = "Email cannot be empty")
   @Email(message = "Invalid email format")
   private String email;

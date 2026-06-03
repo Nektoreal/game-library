@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController //Sptirng boot that this class handles HTTP requests
 @RequestMapping("/api/users") //All methods are available by this "Path"
@@ -40,5 +41,10 @@ public class UserController {
   @GetMapping("/me/stats")
   public UserStatsDto getUserStats(Authentication authentication) {
     return userService.getUserStats(authentication.getName());
+  }
+
+  @PutMapping("/me/displayname")
+  public User updateDisplayName(@RequestBody Map<String, String> body, Authentication authentication) {
+    return userService.updateDisplayName(authentication.getName(), body.get("displayName"));
   }
 }

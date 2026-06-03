@@ -63,4 +63,10 @@ public class UserService {
   public List<User> searchUsers(String query) {
     return userRepository.findByUsernameContainingIgnoreCase(query);
   }
+
+  public User updateDisplayName(String username, String displayName) {
+    User user = userRepository.findByUsername(username).orElseThrow();
+    user.setDisplayName(displayName);
+    return userRepository.save(user);
+}
 }

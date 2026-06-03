@@ -276,6 +276,7 @@ document.addEventListener('click', function(e) {
 })
 
 const viewingUsername = new URLSearchParams(window.location.search).get('user');
+
 if (viewingUsername) {
     loadPublicProfile(viewingUsername);
 } else {

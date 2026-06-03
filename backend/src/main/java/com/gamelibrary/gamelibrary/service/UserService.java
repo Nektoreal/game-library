@@ -29,6 +29,13 @@ public class UserService {
   }
 
   public User addUser(User user){
+    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        throw new RuntimeException("Username already taken");
+    }
+    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        throw new RuntimeException("Email already registered");
+    }
+
     user.setCreatedAt(LocalDateTime.now());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     return userRepository.save(user);

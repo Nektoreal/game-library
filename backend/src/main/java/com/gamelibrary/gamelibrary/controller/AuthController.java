@@ -3,6 +3,8 @@ package com.gamelibrary.gamelibrary.controller;
 import com.gamelibrary.gamelibrary.entity.User;
 import com.gamelibrary.gamelibrary.security.JwtService;
 import com.gamelibrary.gamelibrary.service.UserService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +22,7 @@ public class AuthController {
   private final AuthenticationManager authenticationManager;
 
   @PostMapping("/register")
-  public User register(@RequestBody User user) {
+  public User register(@Valid @RequestBody User user) {
     return userService.addUser(user);
   }
 

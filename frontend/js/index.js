@@ -103,9 +103,17 @@ async function handleRegister() {
         });
         const data = await response.json();
         if(response.ok) {
-            msg.textContent = 'Registered! You can now log in.';
+            msg.textContent = 'Registered! Logging in...';
             msg.className = 'message success';
-            setTimeout(() => switchTo('login'), 1500);
+
+            const loginRes = await fetch('http://127.0.0.1:8080/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const loginData = await loginRes.json();
+            localStorage.setItem('token', loginData.token);
+            setTimeout(() => window.location.href = 'http://127.0.0.1:5500/frontend/games.html', 1000);
         }else {
             msg.textContent = data.message || Object.values(data).join(', ') || 'Something went wrong.';
             msg.className = 'message error';

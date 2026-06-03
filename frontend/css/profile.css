@@ -1,3 +1,8 @@
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
 /* PROFILE HEADER */
 .profile-header {
     display: grid;
@@ -64,7 +69,7 @@
     letter-spacing: 0.05em; margin-bottom: 24px;
 }
 
-.profile-stats { display: flex; gap: 0; }
+.profile-stats { display: flex; gap: 0; flex-wrap: wrap; }
 .pstat { padding: 0 28px; border-right: 1px solid var(--border); }
 .pstat:first-child { padding-left: 0; }
 .pstat:last-child { border-right: none; }
@@ -233,7 +238,6 @@
 }
 .recent-expand-btn:hover { opacity: 0.65; }
 
-
 /* USER SEARCH */
 .search-wrap {
     position: absolute; right: 40px; top: 50%;
@@ -290,17 +294,126 @@
     border-color: rgba(200, 240, 96, 0.3);
 }
 
-/* RESPONSIVE */
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+
 @media (max-width: 900px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .stat-block-genres { grid-column: span 2; }
 }
-@media (max-width: 600px) {
-    .profile-header { grid-template-columns: 1fr; gap: 20px; }
-    .profile-stats { flex-wrap: wrap; gap: 8px; }
-    .pstat { padding: 0 16px; border-right: none; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-    .stat-block-genres { grid-column: span 2; }
-    .recent-item { grid-template-columns: auto 1fr auto; }
-    .currently-playing { flex-direction: column; align-items: flex-start; gap: 4px; }
+
+@media (max-width: 768px) {
+    /* убираем декоративный текст — он вылезает за экран */
+    .profile-header::after {
+        display: none;
+    }
+
+    /* шапка профиля — в одну колонку */
+    .profile-header {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 32px 0 32px;
+    }
+
+    /* stats — сетка 3 колонки вместо flex с большими padding */
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        width: 100%;
+    }
+
+    .pstat {
+        padding: 10px 8px;
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+    }
+
+    /* 4-й и 5-й элементы — нижний ряд */
+    .pstat:nth-child(3) {
+        border-right: none;
+    }
+
+    .pstat:nth-child(4) {
+        border-bottom: none;
+    }
+
+    .pstat:nth-child(5) {
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .pstat:first-child {
+        padding-left: 8px;
+    }
+
+    .pstat-n {
+        font-size: 18px;
+    }
+
+    .pstat-l {
+        font-size: 9px;
+    }
+
+    /* currently playing — в колонку */
+    .currently-playing {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    /* stats row — 2 колонки */
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-block-genres {
+        grid-column: span 2;
+    }
+
+    /* recent item — убрать номер на маленьких */
+    .recent-item {
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+    }
+
+    .recent-num {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-name {
+        font-size: 26px;
+    }
+
+    .profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pstat:nth-child(2) {
+        border-right: none;
+    }
+
+    .pstat:nth-child(3) {
+        border-right: 1px solid var(--border);
+    }
+
+    .pstat:nth-child(4) {
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .pstat:nth-child(5) {
+        grid-column: span 2;
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .stat-block-n {
+        font-size: 20px;
+    }
+
+    .recent-score {
+        font-size: 16px;
+    }
 }

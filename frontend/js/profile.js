@@ -200,7 +200,7 @@ async function loadPublicProfile(username) {
         //hide private btn
         document.querySelector('.nav-right').innerHTML = `
             <button onclick="window.location.href='games.html?user=${username}'">Library</button>
-            <button onclick="window.location.href='profile.html'">← Back</button>
+            <button onclick="window.location.href='profile.html'">Back →</button>
         `;
 
         const editBtn = document.getElementById('btn-edit-displayname');

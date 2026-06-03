@@ -56,7 +56,7 @@ function renderCard(entry) {
                     <div class="game-footer">
                         <span class="status-badge ${entry.status}">${entry.status}</span>
                         <div class="game-score-row">
-                            ${entry.avgRating ? `<span class="score-val">${parseFloat(entry.avgRating)}/10</span>` : ''}
+                            <!--${entry.avgRating ? `<span class="score-val">${parseFloat(entry.avgRating)}/10</span>` : ''}-->
                             <button onclick="event.stopPropagation(); deleteGame('${entry.id}')" class="btn-delete">Delete</button>
                         </div>
                     </div>
@@ -426,6 +426,7 @@ function sortGames(by) {
         if (by === 'status') return a.status.localeCompare(b.status);
     });
 
+    const grid = document.getElementById('gamesGrid');
     const renderer = publicUser ? renderPublicCard : renderCard;
     grid.innerHTML = sorted.map(entry => renderer(entry)).join('');
 }
@@ -552,7 +553,7 @@ async function loadPublicGames(username) {
     // hide private button
     document.querySelector('.add-game').style.display = 'none';
     document.querySelector('.nav-right').innerHTML = `
-        <button onclick="window.location.href='profile.html?user=${username}'">← Profile</button>
+        <button onclick="window.location.href='profile.html?user=${username}'">Profile</button>
     `;
 
     // Change navbar header
@@ -627,7 +628,7 @@ function renderPublicCard(entry) {
             <div class="game-footer">
                 <span class="status-badge ${entry.status}">${entry.status}</span>
                 <div class="game-score-row">
-                    ${entry.avgRating ? `<span class="score-val">${parseFloat(entry.avgRating)}/10</span>` : ''}
+                    <!--${entry.avgRating ? `<span class="score-val">${parseFloat(entry.avgRating)}/10</span>` : ''}-->
                 </div>
             </div>
         </div>

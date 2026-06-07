@@ -72,7 +72,7 @@ async function handleSubmit() {
             localStorage.setItem('token', data.token);
             msg.textContent = 'Login successful! Redirecting...';
             msg.className = 'message success';
-            setTimeout(() => window.location.href = 'http://127.0.0.1:5500/frontend/games.html', 1000);
+            setTimeout(() => window.location.href = 'games.html', 1000);
         } else {
             msg.textContent = data.message || 'Something went wrong.';
             msg.className = 'message error';
@@ -113,7 +113,7 @@ async function handleRegister() {
             });
             const loginData = await loginRes.json();
             localStorage.setItem('token', loginData.token);
-            setTimeout(() => window.location.href = 'http://127.0.0.1:5500/frontend/games.html', 1000);
+            setTimeout(() => window.location.href = 'games.html', 1000);
         }else {
             msg.textContent = data.message || Object.values(data).join(', ') || 'Something went wrong.';
             msg.className = 'message error';

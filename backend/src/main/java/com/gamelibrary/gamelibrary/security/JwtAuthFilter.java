@@ -20,11 +20,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
-        @Override
-            protected void doFilterInternal(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain filterChain)
-                    throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
 
@@ -34,26 +34,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        
+
         try {
             String username = jwtService.extractUsername(token);
-            System.out.println("JWT username extracted: " + username);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                System.out.println("UserDetails loaded: " + userDetails.getUsername());
                 if (jwtService.isTokenValid(token)) {
-                    System.out.println("Token is valid!");
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails, null, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
-                    System.out.println("Token is NOT valid!");
                 }
             }
         } catch (Exception e) {
-            System.out.println("JWT error: " + e.getMessage());
+            // token invalid, continue without authentication
         }
 
         filterChain.doFilter(request, response);

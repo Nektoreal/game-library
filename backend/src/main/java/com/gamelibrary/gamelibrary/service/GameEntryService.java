@@ -55,8 +55,11 @@ public class GameEntryService {
     return gameEntryRepository.save(gameEntry);
   }
 
-  public void deleteGameEntry(String id){
+  public void deleteGameEntry(String id, String username){
     GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
+    if (!(entry.getUser().getUsername().equals(username))) {
+      throw new RuntimeException("Wrong user");
+    }
     // Delete only THIS user's review for this game
     reviewRepository.deleteByGameIdAndUserUsername(
       entry.getGame().getId(),

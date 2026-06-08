@@ -5,6 +5,7 @@ import com.gamelibrary.gamelibrary.entity.GameStatus;
 import com.gamelibrary.gamelibrary.entity.User;
 import com.gamelibrary.gamelibrary.entity.UserStatsDto;
 import com.gamelibrary.gamelibrary.repository.GameEntryRepository;
+import com.gamelibrary.gamelibrary.repository.ReviewRepository;
 import com.gamelibrary.gamelibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final GameEntryRepository gameEntryRepository;
+  private final ReviewRepository reviewRepository;
   
   public List<User> getAllUsers() {
     return userRepository.findAll();
@@ -57,7 +59,9 @@ public class UserService {
     long completed = entries.stream().filter(e -> e.getStatus() == GameStatus.COMPLETED).count();
     long dropped = entries.stream().filter(e -> e.getStatus() == GameStatus.DROPPED).count();
     
-    return new UserStatsDto((long) entries.size(), playing, planned, completed, dropped, 0.0);
+    
+    Double avgRating = reviewRepository.calculateAverageRatingByUsername(username);
+    return new UserStatsDto((long) entries.size(), playing, planned, completed, dropped, avgRating != null? avgRating : 0.0);
   }
 
   public List<User> searchUsers(String query) {
@@ -68,5 +72,5 @@ public class UserService {
     User user = userRepository.findByUsername(username).orElseThrow();
     user.setDisplayName(displayName);
     return userRepository.save(user);
-}
+  }
 }

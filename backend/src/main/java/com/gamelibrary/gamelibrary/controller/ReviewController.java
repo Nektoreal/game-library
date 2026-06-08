@@ -45,12 +45,12 @@ public class ReviewController {
   }
 
   @PutMapping("/{id}")
-  public Review updatReview(@PathVariable String id, @RequestBody Review review) {
-    return reviewService.updateReview(id, review);
+  public Review updatReview(@PathVariable String id, @RequestBody Review review, Authentication authentication) {
+    return reviewService.updateReview(id, review, authentication.getName());
   }
 
   @DeleteMapping("/{id}") 
-    public void  deleteReview(@PathVariable String id){
-      reviewService.deleteReview(id);
+    public void  deleteReview(@PathVariable String id, Authentication authentication){
+      reviewService.deleteReview(id, authentication.getName());
     }
   }

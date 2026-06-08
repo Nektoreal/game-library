@@ -34,8 +34,9 @@ public class GameEntryController {
   }
 
   @DeleteMapping("/{id}") //handless HTTP requests "DELETE /api/gameEntries/{id}"
-  public void deleteGameEntry(@PathVariable String id){ //take the {id} from the URL and pass it into the method
-    gameEntryService.deleteGameEntry(id);
+  public void deleteGameEntry(@PathVariable String id, Authentication authentication){ //take the {id} from the URL and pass it into the method
+
+    gameEntryService.deleteGameEntry(id, authentication.getName());
   }
 
   @PutMapping("/{id}/status")

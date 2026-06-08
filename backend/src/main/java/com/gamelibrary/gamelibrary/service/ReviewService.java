@@ -14,6 +14,8 @@ import com.gamelibrary.gamelibrary.entity.Game;
 
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,6 +27,10 @@ public class ReviewService {
   private final GameRepository gameRepository;
 
   public Review addReview(Review review){
+
+    if (reviewRepository.existsByGameIdAndUserUsername(review.getGame().getId(), review.getUser().getId())){
+      throw new RuntimeException("Review already exists");
+    }
     
     User user = userRepository.findById(review.getUser().getId()).orElseThrow();
 
@@ -44,14 +50,26 @@ public class ReviewService {
     return reviewRepository.findByUserUsername(username);
   }
 
-  public Review updateReview(String id, Review updatedReview){
+  public Review updateReview(String id, Review updatedReview, String username){
+
     Review review = reviewRepository.findById(id).orElseThrow();
+
+    if (!(review.getUser().getUsername().equals(username))) {
+      throw new RuntimeException("Wrong user");
+    }
+
     review.setRating(updatedReview.getRating());
     review.setText(updatedReview.getText());
     return reviewRepository.save(review);
   }
 
-  public void deleteReview(String id) {
+  public void deleteReview(String id, String username) {
+    
+    Review review = reviewRepository.findById(id).orElseThrow();
+
+    if (!(review.getUser().getUsername().equals(username))) {
+      throw new RuntimeException("Wrong user");
+    }
     reviewRepository.deleteById(id);
   }
 }

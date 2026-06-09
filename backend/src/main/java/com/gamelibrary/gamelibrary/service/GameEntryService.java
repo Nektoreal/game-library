@@ -69,8 +69,13 @@ public class GameEntryService {
     gameEntryRepository.deleteById(id);
   }
 
-  public Page<GameEntry> getEntriesByUsername(String username, Pageable pageable) {
+  public Page<GameEntry> getEntriesByUsername(String username, Pageable pageable, String status) {
+
+    if (status.equals("ALL")) {
       return gameEntryRepository.findByUserUsername(username, pageable);
+    } else {
+      return gameEntryRepository.findByUserUsernameAndStatus(username, GameStatus.valueOf(status), pageable);
+    }
   }
 
   public GameEntry updateStatus(String id, String status) {

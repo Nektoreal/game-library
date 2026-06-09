@@ -65,7 +65,7 @@ function renderCard(entry) {
 }
 
 //Load Games from database
-async function loadGames(page = 0) {
+async function loadGames(page = 0, status = "ALL") {
     startProgress();
 
     //show skeleton
@@ -81,7 +81,7 @@ async function loadGames(page = 0) {
                 </div>
                 `).join('');
 
-    const res = await fetchWithAuth(`${API}/api/entries?page=${page}&size=20`);
+    const res = await fetchWithAuth(`${API}/api/entries?page=${page}&size=20&status=${status}`);
     const data = await res.json();
     const entries = data.content;
 
@@ -113,34 +113,21 @@ async function loadGames(page = 0) {
     //game card
     grid.innerHTML = entriesWithRatings.map(entry => renderCard(entry)).join('');
 
-    if (currentFilter !== 'ALL') {
-        filterGames(currentFilter);
-    } else {
-        document.getElementById('filter-ALL').classList.add('active');
-    }
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`filter-${status}`).classList.add('active');
 
     renderPagination();
     finishProgress();
 }
 
 function filterGames(status) {
-    currentFilter = status;
-    const filtered = status === 'ALL' ? allEntries : allEntries.filter(entry => entry.status === status);
-    currentEntries = filtered;
 
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(btn => btn.classList.remove('active'));
+    currentFilter = status;
+
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`filter-${status}`).classList.add('active');
 
-    const grid = document.getElementById('gamesGrid');
-
-    if (filtered.length === 0) {
-        grid.innerHTML = `<div class="empty">No ${status.toLowerCase()} games yet</div>`;
-        return;
-    }
-
-    const renderer = publicUser ? renderPublicCard : renderCard;
-    grid.innerHTML = filtered.map(entry => renderer(entry)).join('');
+    loadGames(0, status)
 }
 
 async function addGame() {
@@ -538,13 +525,13 @@ function renderPagination() {
 
     container.innerHTML = `
         <button class="filter-btn ${currentPage === 0 ? 'disabled' : ''}"
-            onclick="loadGames(${currentPage - 1})"
+            onclick="loadGames(${currentPage - 1}, '${currentFilter}')"
             ${currentPage === 0 ? 'disabled' : ''}>← Prev</button>
         <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
             ${currentPage + 1} / ${totalPages}
         </span>
         <button class="filter-btn ${currentPage >= totalPages - 1 ? 'disabled' : ''}"
-            onclick="loadGames(${currentPage + 1})"
+            onclick="loadGames(${currentPage + 1}, '${currentFilter}')"
             ${currentPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
     `;
 }

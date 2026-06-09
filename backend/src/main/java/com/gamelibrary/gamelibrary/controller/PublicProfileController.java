@@ -33,8 +33,9 @@ public class PublicProfileController {
     public Page<GameEntry> getPublicEntries(
         @PathVariable String username,
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size) {
-        return gameEntryService.getEntriesByUsername(username, PageRequest.of(page, size));
+        @RequestParam(defaultValue = "20") int size,
+        @RequestParam(defaultValue = "ALL") String status){
+        return gameEntryService.getEntriesByUsername(username, PageRequest.of(page, size), status);
     }
 
     @GetMapping("/{username}/reviews")

@@ -23,9 +23,10 @@ public class GameEntryController {
   public Page<GameEntry> getAllGameEntries(
     Authentication authentication,
   @RequestParam(defaultValue = "0") int page,
-  @RequestParam(defaultValue = "20") int size) { 
+  @RequestParam(defaultValue = "20") int size,
+  @RequestParam(defaultValue = "ALL") String status) { 
     String username = authentication.getName();
-    return gameEntryService.getEntriesByUsername(username, PageRequest.of(page, size));
+    return gameEntryService.getEntriesByUsername(username, PageRequest.of(page, size), status);
   }
 
   @PostMapping //handless HTTP requests "POST /api/gameEntries"

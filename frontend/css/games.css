@@ -455,3 +455,8 @@
     border-left: none;
     border-top: none;
 }
+
+/*PlayTIME*/
+#Playtime {
+    padding: 0 48px 20px;
+}

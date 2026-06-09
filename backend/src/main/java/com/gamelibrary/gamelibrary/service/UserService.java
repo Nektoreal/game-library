@@ -69,8 +69,12 @@ public class UserService {
   }
 
   public User updateDisplayName(String username, String displayName) {
+    System.out.println("Updating displayName for: " + username + " -> " + displayName);
     User user = userRepository.findByUsername(username).orElseThrow();
+    System.out.println("Found user: " + user.getId());
     user.setDisplayName(displayName);
-    return userRepository.save(user);
+    User saved = userRepository.save(user);
+    System.out.println("Saved successfully: " + saved.getDisplayName());
+    return saved;
   }
 }

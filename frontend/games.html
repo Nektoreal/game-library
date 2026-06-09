@@ -152,10 +152,12 @@
         </select>
 
         <hr class="sidebar-divider">
+        <h3 class="sidebar-section-title">PlayTime</h3>
         <div id="Playtime">
-            <h3>PlayTime</h3>
-            <input type="text" id="addPlaytime" placeholder="hours">
-            <button onclick="addPlaytime()">Add time</button>
+            <div class="add-row">
+                <input type="text" id="addPlaytime" placeholder="hours" class="add-input">
+                <button onclick="addPlaytime()" class="btn-save-review">Add time</button>
+            </div>
         </div>
         <h3 class="sidebar-section-title">Review</h3>
         <div id="sidebar-reviews"></div>

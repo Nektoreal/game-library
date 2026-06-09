@@ -105,11 +105,15 @@ async function loadGames(page = 0, status = "ALL") {
     allEntries = entriesWithRatings;
     currentEntries = entriesWithRatings;
 
-    document.getElementById('filter-ALL').textContent = `All (${entriesWithRatings.length})`;
-    document.getElementById('filter-PLAYING').textContent = `Playing (${entriesWithRatings.filter(e => e.status === 'PLAYING').length})`;
-    document.getElementById('filter-PLANNED').textContent = `Planned (${entriesWithRatings.filter(e => e.status === 'PLANNED').length})`;
-    document.getElementById('filter-DROPPED').textContent = `Dropped (${entriesWithRatings.filter(e => e.status === 'DROPPED').length})`;
-    document.getElementById('filter-COMPLETED').textContent = `Completed (${entriesWithRatings.filter(e => e.status === 'COMPLETED').length})`;
+    const allRes = await fetchWithAuth(`${API}/api/entries?page=0&size=1000&status=ALL`);
+    const allData = await allRes.json();
+    const allEntriesCount = allData.content;
+
+    document.getElementById('filter-ALL').textContent = `All (${allEntriesCount.length})`;
+    document.getElementById('filter-PLAYING').textContent = `Playing (${allEntriesCount.filter(e => e.status === 'PLAYING').length})`;
+    document.getElementById('filter-PLANNED').textContent = `Planned (${allEntriesCount.filter(e => e.status === 'PLANNED').length})`;
+    document.getElementById('filter-DROPPED').textContent = `Dropped (${allEntriesCount.filter(e => e.status === 'DROPPED').length})`;
+    document.getElementById('filter-COMPLETED').textContent = `Completed (${allEntriesCount.filter(e => e.status === 'COMPLETED').length})`;
     //game card
     grid.innerHTML = entriesWithRatings.map(entry => renderCard(entry)).join('');
 

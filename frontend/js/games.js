@@ -667,3 +667,15 @@ async function openPublicSidebar(entry) {
     document.getElementById('overlay').style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
+
+//addPlaytime on sidebar card game
+async function addPlaytime(){
+    let parsedPlaytime = document.getElementById("addPlaytime").value*3600
+
+    await fetchWithAuth(`${API}/api/entries/${selectedEntryId}/playtime`, {
+        method: 'PUT',
+        body: JSON.stringify({ seconds: parsedPlaytime })
+    });
+    showToast('Playtime updated!', 'success')
+    loadGames(currentPage, currentFilter)
+}

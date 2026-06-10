@@ -9,15 +9,15 @@ A full-stack web application for tracking your personal game collection. Built w
 ![Register](screenshots/Register.jpeg)
 
 ### Game Library
-![Games](screenshots/Games.jpeg)
+![Games](screenshots/Games.png)
 
 ### Profile
-![Profile](screenshots/Profile.jpeg)
+![Profile](screenshots/Profile.png)
 
 ### Sidebar
 ![Sidebar](screenshots/Sidebar.png)
 
-###Public
+### Public
 ![ProfilePublic](screenshots/ProfilePublic.png)
 ![GamesPublic](screenshots/GamesPublic.png)
 ![SidebarPublic](screenshots/SidebarPublic.png)

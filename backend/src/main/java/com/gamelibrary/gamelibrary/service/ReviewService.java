@@ -13,9 +13,6 @@ import com.gamelibrary.gamelibrary.entity.User;
 import com.gamelibrary.gamelibrary.entity.Game;
 
 import java.util.List;
-
-import javax.management.RuntimeErrorException;
-
 import lombok.RequiredArgsConstructor;
 
 @Service

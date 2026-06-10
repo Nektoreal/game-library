@@ -80,7 +80,7 @@ spring.datasource.password=YOUR_PASSWORD
 4. Run the backend
 ```bash
 cd backend
-./mvnw spring-boot:run
+run spring-boot
 ```
 
 5. Open `frontend/index.html` with Live Server (VS Code extension)

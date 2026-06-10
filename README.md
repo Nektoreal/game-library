@@ -89,13 +89,6 @@ run spring-boot
 
 Swagger UI available at: `http://localhost:8080/swagger-ui.html`
 
-## Running Tests
-
-```bash
-cd backend
-./mvnw test
-```
-
 ## Project Structure
 
 ```text

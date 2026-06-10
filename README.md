@@ -14,15 +14,23 @@ A full-stack web application for tracking your personal game collection. Built w
 ### Profile
 ![Profile](screenshots/Profile.jpeg)
 
+### Sidebar
+![Sidebar](screenshots/Sidebar.png)
+
+###Public
+![ProfilePublic](screenshots/ProfilePublic.png)
+![GamesPublic](screenshots/GamesPublic.png)
+![SidebarPublic](screenshots/SidebarPublic.png)
+
 ## Features
 
-- 🔐 JWT Authentication (register/login)
-- 🎮 Search games via RAWG API (900k+ games)
-- 📚 Track games with statuses: Planned, Playing, Completed, Dropped
-- ⭐ Leave reviews with 1-10 star ratings
-- 📊 Profile with statistics, top genres, recent reviews
-- 🖼️ Game covers from RAWG API
-- 🔍 Filter games by status with counters
+- JWT Authentication (register/login)
+- Search games via IGDB API
+- Track games with statuses: Planned, Playing, Completed, Dropped
+- Leave reviews with 1-10 ratings
+- Profile with statistics, top genres, recent reviews
+- Game covers from IGDB API
+- Filter games by status with counters
 
 ## Tech Stack
 

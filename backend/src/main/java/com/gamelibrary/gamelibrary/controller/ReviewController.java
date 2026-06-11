@@ -33,9 +33,8 @@ public class ReviewController {
   }
 
   @PostMapping
-  public Review addReview(@RequestBody Review review){
-    
-    return reviewService.addReview(review);
+  public Review addReview(@RequestBody Review review, Authentication authentication){
+    return reviewService.addReview(review, authentication.getName());
   }
 
   @GetMapping("/me")

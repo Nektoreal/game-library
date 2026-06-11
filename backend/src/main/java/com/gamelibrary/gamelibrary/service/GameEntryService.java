@@ -19,6 +19,9 @@ import java.util.List;
 import com.gamelibrary.gamelibrary.entity.User;
 import com.gamelibrary.gamelibrary.entity.Game;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +61,7 @@ public class GameEntryService {
   public void deleteGameEntry(String id, String username){
     GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
     if (!(entry.getUser().getUsername().equals(username))) {
-      throw new RuntimeException("Wrong user");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     }
     // Delete only THIS user's review for this game
     reviewRepository.deleteByGameIdAndUserUsername(
@@ -78,8 +81,13 @@ public class GameEntryService {
     }
   }
 
-  public GameEntry updateStatus(String id, String status) {
+  public GameEntry updateStatus(String id, String status, String username) {
+
     GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
+    if (!(entry.getUser().getUsername().equals(username))) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+    }
+
     entry.setStatus(GameStatus.valueOf(status));
 
     if (GameStatus.valueOf(status) == GameStatus.COMPLETED) {
@@ -90,8 +98,11 @@ public class GameEntryService {
     return gameEntryRepository.save(entry);
   }
 
-  public GameEntry addPlaytime (String id, long seconds){
+  public GameEntry addPlaytime (String id, long seconds, String username){
     GameEntry entry = gameEntryRepository.findById(id).orElseThrow();
+    if (!(entry.getUser().getUsername().equals(username))) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+    }
 
     entry.setPlaytime(entry.getPlaytime() + seconds);
     entry.setLastSession(LocalDateTime.now());

@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Map;
 
 @RestController //Sptirng boot that this class handles HTTP requests
@@ -23,10 +25,11 @@ public class UserController {
     return userService.getUserByUsername(authentication.getName());
   }
 
-  @GetMapping //handless HTTP requests "GET /api/users"
+ /*  @GetMapping //handless HTTP requests "GET /api/users"
   public List<User> getAllUsers(){
     return userService.getAllUsers();
   }
+    */
 
   @PostMapping //handless HTTP requests "POST /api/users"
   public User addUser(@RequestBody User user){ //take the data from the request body and convert it into a User object
@@ -34,7 +37,12 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}") //handless HTTP requests "DELETE /api/users/{id}"
-  public void deleteUser(@PathVariable String id){ //take the {id} from the URL and pass it into the method
+  public void deleteUser(@PathVariable String id, Authentication authentication){ //take the {id} from the URL and pass it into the method
+
+    if (!(userService.getUserByUsername(authentication.getName()).getId().equals(id))) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+    }
+
     userService.deleteUser(id); 
   }
 

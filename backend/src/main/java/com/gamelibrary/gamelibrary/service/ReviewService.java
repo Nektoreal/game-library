@@ -15,6 +15,9 @@ import com.gamelibrary.gamelibrary.entity.Game;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -23,15 +26,13 @@ public class ReviewService {
   private final UserRepository userRepository;
   private final GameRepository gameRepository;
 
-  public Review addReview(Review review){
+  public Review addReview(Review review, String username){
+    User user = userRepository.findByUsername(username).orElseThrow();
+    Game game = gameRepository.findById(review.getGame().getId()).orElseThrow();
 
-    if (reviewRepository.existsByGameIdAndUserUsername(review.getGame().getId(), review.getUser().getId())){
+    if (reviewRepository.existsByGameIdAndUserUsername(game.getId(), user.getId())){
       throw new RuntimeException("Review already exists");
     }
-    
-    User user = userRepository.findById(review.getUser().getId()).orElseThrow();
-
-    Game game = gameRepository.findById(review.getGame().getId()).orElseThrow();
 
     review.setUser(user);
     review.setGame(game);
@@ -52,7 +53,7 @@ public class ReviewService {
     Review review = reviewRepository.findById(id).orElseThrow();
 
     if (!(review.getUser().getUsername().equals(username))) {
-      throw new RuntimeException("Wrong user");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     }
 
     review.setRating(updatedReview.getRating());
@@ -65,7 +66,7 @@ public class ReviewService {
     Review review = reviewRepository.findById(id).orElseThrow();
 
     if (!(review.getUser().getUsername().equals(username))) {
-      throw new RuntimeException("Wrong user");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     }
     reviewRepository.deleteById(id);
   }

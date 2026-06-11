@@ -55,7 +55,7 @@ class ReviewServiceTest {
     when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
     //Act
-    Review result = reviewService.addReview(review);
+    Review result = reviewService.addReview(review, "UserTest");
 
     //Assert
     assertNotNull(result.getCreatedAt());

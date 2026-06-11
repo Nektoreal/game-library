@@ -41,12 +41,12 @@ public class GameEntryController {
   }
 
   @PutMapping("/{id}/status")
-  public GameEntry updateStatus(@PathVariable String id, @RequestBody Map<String, String> body) {
-    return gameEntryService.updateStatus(id, body.get("status"));
+  public GameEntry updateStatus(@PathVariable String id, @RequestBody Map<String, String> body, Authentication authentication) {
+    return gameEntryService.updateStatus(id, body.get("status"), authentication.getName());
   }
 
   @PutMapping("/{id}/playtime")
-  public GameEntry addPlaytime(@PathVariable String id, @RequestBody Map<String, String> body){
-    return gameEntryService.addPlaytime(id, Long.parseLong(body.get("seconds")));
+  public GameEntry addPlaytime(@PathVariable String id, @RequestBody Map<String, String> body, Authentication authentication){
+    return gameEntryService.addPlaytime(id, Long.parseLong(body.get("seconds")), authentication.getName());
   }
 }

@@ -42,7 +42,7 @@ class GameEntryServiceTest {
     when(gameEntryRepository.save(any(GameEntry.class))).thenReturn(entry);
 
     // Act
-    GameEntry result = gameEntryService.updateStatus("123", "COMPLETED");
+    GameEntry result = gameEntryService.updateStatus("123", "COMPLETED", "UserTest");
 
     // Assert
     assertEquals(GameStatus.COMPLETED, result.getStatus());

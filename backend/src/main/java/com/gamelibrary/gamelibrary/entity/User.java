@@ -36,7 +36,7 @@ public class User implements UserDetails{
   @NotBlank(message = "Email cannot be empty")
   @Email(message = "Invalid email format")
   private String email;
-
+//password fix
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @NotBlank(message = "Password cannot be empty")
   @Size(min = 8, message = "Password must be at least 8 characters")

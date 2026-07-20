@@ -44,7 +44,7 @@ A full-stack web application for tracking your personal game collection. Built w
 
 **Frontend**
 - HTML / CSS / JavaScript
-- RAWG API integration
+- IGDB API integration
 
 **Testing**
 - JUnit 5
